@@ -1,0 +1,136 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+header{
+  color: #007bff;
+
+}
+header a{
+  font-weight: bold;
+  text-decoration: none;
+  color: #007bff;
+}
+main{
+ flex: 1;
+}
+a{
+  text-decoration: none;
+}
+.btn-primary,
+.btn-outline-primary {
+  background-color: #007bff;
+  color: #ffffff;
+}
+.products{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+.product{
+  border: 1px solid grey;
+  margin: 1rem;
+}
+.product img{
+  width: 100%;
+  max-width: 400PX;
+}
+
+.product-info{
+  padding: 1rem;
+}
+
+.loading svg polyline {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.loading svg polyline#back {
+  fill: none;
+  stroke: #ff4d5033;
+}
+
+.loading svg polyline#front {
+  fill: none;
+  stroke: #ff4d4f;
+  stroke-dasharray: 48, 144;
+  stroke-dashoffset: 192;
+  animation: dash_682 1.4s linear infinite;
+}
+
+@keyframes dash_682 {
+  72.5% {
+    opacity: 0;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.site-container{
+  min-height: 100vh;
+}
+
+.rating span{
+  color: #ffc000;
+}
+.img-large{
+  max-width: 100%;
+}
+.img-thumbnail{
+  height: 80px;
+}
+.small-container{
+  max-width: 600px;
+}
+
+
+.checkout-steps > div {
+  border-bottom: 0.2rem solid #a0a0a0;
+  color: #a0a0a0;
+}
+.checkout-steps > div.active {
+  border-bottom: 0.2rem solid #007bff;
+  color: #007bff;
+}
+
+
+.navbar-brand {
+  font-weight: bold;
+}
+.side-navbar {
+  width: 240px;
+  height: 100%;
+  position: absolute;
+  left: -300px;
+  background-color: white;
+  color: #007bff;
+  transition: 0.5s;
+}
+
+.site-container {
+  transition: 0.4s;
+}
+.active-cont {
+  margin-left: 240px;
+}
+.active-nav {
+  left: 0;
+}
+
+.text-bold {
+  font-weight: bold;
+}

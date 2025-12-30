@@ -1,0 +1,6 @@
+{
+  "eslint.nodePath": "./node_modules",
+  "eslint.options": {
+    "configFile": "./node_modules/eslint-config-react-app/index.js"
+  }
+}
