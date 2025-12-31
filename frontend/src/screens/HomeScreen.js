@@ -7,6 +7,9 @@ import { Helmet } from "react-helmet-async";
 import Loading from "../components/Loading";
 import MessageBox from "../components/MessageBox";
 
+// Set your backend URL here
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -31,7 +34,8 @@ function HomeScreen() {
     const fetchData = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        const result = await axios.get("/api/products");
+        // Include the backend URL
+        const result = await axios.get(`${BACKEND_URL}/api/products`);
         dispatch({ type: "FETCH_SUCCESS", payload: result.data });
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: err.message });
@@ -40,30 +44,29 @@ function HomeScreen() {
     fetchData();
   }, []);
 
-
   return (
     <>
-    <Helmet>
-      <title>Quantum Cart</title>
-    </Helmet>
+      <Helmet>
+        <title>Quantum Cart</title>
+      </Helmet>
       <div className="products">
         {loading ? (
-        <Loading />
+          <Loading />
         ) : error ? (
           <MessageBox variant='danger'>{error}</MessageBox>
         ) : (
           <Row>
-          {products.map((product) => (
-            <Col key={product.slug} sm={6} md={4} lg={3} className="mb-3">
-              <Product product={product}></Product>
-            </Col>
-          ))}
+            {products.map((product) => (
+              <Col key={product.slug} sm={6} md={4} lg={3} className="mb-3">
+                <Product product={product}></Product>
+              </Col>
+            ))}
           </Row>
         )}
-        
       </div>
     </>
   );
 }
 
 export default HomeScreen;
+

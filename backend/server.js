@@ -12,16 +12,12 @@ import uploadRouter from './routes/uploadRoutes.js';
 
 dotenv.config({ debug: false });
 
-const MONGODB_URI = 'mongodb+srv://hemanathkalai29_db_user:NiMQ6hygvKCH6Wd4@qcart.1ztdvem.mongodb.net/?appName=Qcart' || 'mongodb://localhost/Qcart'
-mongoose.set('strictQuery', true)
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => {
-    console.log('connected to mongodb')
+mongoose.connect(process.env.MONGODB_URI).then(() => {
+    console.log("connected to db");
   })
-  .catch(() => {
-    console.log('error mongodb')
-  })
+  .catch((err) => {
+    console.log(err.message);
+  });
 
 const app = express();
 
