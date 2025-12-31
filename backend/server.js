@@ -1,57 +1,50 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import  data  from './data.js';
+import mongoose from 'mongoose'
 import dotenv from 'dotenv';
-import path from 'path';
-
 import seedRouter from './routes/seedRoutes.js';
 import productRouter from './routes/productRoutes.js';
 import userRouter from './routes/userRoutes.js';
 import orderRouter from './routes/orderRoutes.js';
 import uploadRouter from './routes/uploadRoutes.js';
 
-dotenv.config();
+
+dotenv.config({ debug: false });
+
+const MONGODB_URI = process.env.MONGODB_URI  || 'mongodb://localhost/Qcart'
+mongoose.set('strictQuery', true)
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log('connected to mongodb')
+  })
+  .catch(() => {
+    console.log('error mongodb')
+  })
 
 const app = express();
 
-// MongoDB
-const MONGODB_URI = 'mongodb+srv://hemanathkalai29_db_user:NiMQ6hygvKCH6Wd4@qcart.1ztdvem.mongodb.net/?appName=Qcart' || 'mongodb://localhost/Qcart';
-
-mongoose.set('strictQuery', true);
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error('MongoDB error:', err.message));
-
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve landing page
-app.use(express.static(path.join(process.cwd(), 'public')));
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
-});
-
-// PayPal key
 app.get('/api/keys/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
 });
 
-// API routes
+
 app.use('/api/upload', uploadRouter);
-app.use('/api/seed', seedRouter);
-app.use('/api/products', productRouter);
-app.use('/api/users', userRouter);
+app.use('/api/seed', seedRouter )
+app.use('/api/products', productRouter)
+app.use('/api/users', userRouter)
 app.use('/api/orders', orderRouter);
 
-// Error handler
+
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });
 });
 
-// Server
 const port = process.env.PORT || 5000;
+
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+    console.log("server connected at http://localhost:"+port)
+})
