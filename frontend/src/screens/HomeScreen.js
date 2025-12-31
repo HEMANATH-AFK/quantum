@@ -8,7 +8,7 @@ import Loading from "../components/Loading";
 import MessageBox from "../components/MessageBox";
 
 // Set your backend URL here
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
 
 const reducer = (state, action) => {
   switch (action.type) {
