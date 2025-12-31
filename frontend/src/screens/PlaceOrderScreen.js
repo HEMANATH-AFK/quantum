@@ -13,6 +13,9 @@ import { Store } from '../Store';
 import CheckoutSteps from '../components/CheckoutSteps';
 import Loading from '../components/Loading';
 
+// Set your backend URL here
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'CREATE_REQUEST':
@@ -28,20 +31,12 @@ const reducer = (state, action) => {
 
 export default function PlaceOrderScreen() {
   const navigate = useNavigate();
-
-
-  const [{ loading }, dispatch] = useReducer(reducer, {
-    loading: false,
-  });
-
-
- const { state, dispatch: ctxDispatch } = useContext(Store);
+  const [{ loading }, dispatch] = useReducer(reducer, { loading: false });
+  const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
 
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
-  cart.itemsPrice = round2(
-    cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
-  );
+  cart.itemsPrice = round2(cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0));
   cart.shippingPrice = cart.itemsPrice > 100 ? round2(0) : round2(10);
   cart.taxPrice = round2(0.15 * cart.itemsPrice);
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
@@ -49,9 +44,8 @@ export default function PlaceOrderScreen() {
   const placeOrderHandler = async () => {
     try {
       dispatch({ type: 'CREATE_REQUEST' });
-
       const { data } = await Axios.post(
-        '/api/orders',
+        `${BACKEND_URL}/api/orders`,
         {
           orderItems: cart.cartItems,
           shippingAddress: cart.shippingAddress,
@@ -62,9 +56,7 @@ export default function PlaceOrderScreen() {
           totalPrice: cart.totalPrice,
         },
         {
-          headers: {
-            authorization: `Bearer ${userInfo.token}`,
-          },
+          headers: { authorization: `Bearer ${userInfo.token}` },
         }
       );
       ctxDispatch({ type: 'CART_CLEAR' });
@@ -75,7 +67,7 @@ export default function PlaceOrderScreen() {
       dispatch({ type: 'CREATE_FAIL' });
       toast.error(getError(err));
     }
-  }
+  };
 
   useEffect(() => {
     if (!cart.paymentMethod) {
@@ -85,7 +77,7 @@ export default function PlaceOrderScreen() {
 
   return (
     <div>
-      <CheckoutSteps step1 step2 step3 step4></CheckoutSteps>
+      <CheckoutSteps step1 step2 step3 step4 />
       <Helmet>
         <title>Preview Order</title>
       </Helmet>
@@ -97,8 +89,8 @@ export default function PlaceOrderScreen() {
               <Card.Title>Shipping</Card.Title>
               <Card.Text>
                 <strong>Name:</strong> {cart.shippingAddress.fullName} <br />
-                <strong>Address: </strong> {cart.shippingAddress.address},
-                {cart.shippingAddress.city}, {cart.shippingAddress.postalCode},
+                <strong>Address:</strong> {cart.shippingAddress.address},{' '}
+                {cart.shippingAddress.city}, {cart.shippingAddress.postalCode},{' '}
                 {cart.shippingAddress.country}
               </Card.Text>
               <Link to="/shipping">Edit</Link>
@@ -127,12 +119,10 @@ export default function PlaceOrderScreen() {
                           src={item.image}
                           alt={item.name}
                           className="img-fluid rounded img-thumbnail"
-                        ></img>{' '}
-                        <Link to={`/product/₹{item.slug}`}>{item.name}</Link>
+                        />{' '}
+                        <Link to={`/product/${item.slug}`}>{item.name}</Link>
                       </Col>
-                      <Col md={3}>
-                        <span>{item.quantity}</span>
-                      </Col>
+                      <Col md={3}>{item.quantity}</Col>
                       <Col md={3}>₹{item.price}</Col>
                     </Row>
                   </ListGroup.Item>
@@ -168,7 +158,7 @@ export default function PlaceOrderScreen() {
                 <ListGroup.Item>
                   <Row>
                     <Col>
-                      <strong> Order Total</strong>
+                      <strong>Order Total</strong>
                     </Col>
                     <Col>
                       <strong>₹{cart.totalPrice.toFixed(2)}</strong>
@@ -185,7 +175,7 @@ export default function PlaceOrderScreen() {
                       Place Order
                     </Button>
                   </div>
-                   {loading && <Loading />}
+                  {loading && <Loading />}
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>

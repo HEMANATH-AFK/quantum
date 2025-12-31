@@ -3,33 +3,26 @@ import React, { useContext, useEffect, useReducer } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Button from 'react-bootstrap/Button';
 import MessageBox from '../components/MessageBox';
+import Loading from '../components/Loading';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Store } from '../Store';
 import { getError } from '../utils';
-import Loading from '../components/Loading';
+
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
-      return {
-        ...state,
-        users: action.payload,
-        loading: false,
-      };
+      return { ...state, users: action.payload, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
 
     case 'DELETE_REQUEST':
       return { ...state, loadingDelete: true, successDelete: false };
     case 'DELETE_SUCCESS':
-      return {
-        ...state,
-        loadingDelete: false,
-        successDelete: true,
-      };
+      return { ...state, loadingDelete: false, successDelete: true };
     case 'DELETE_FAIL':
       return { ...state, loadingDelete: false };
     case 'DELETE_RESET':
@@ -39,8 +32,8 @@ const reducer = (state, action) => {
       return state;
   }
 };
-export default function UserListScreen() {
 
+export default function UserListScreen() {
   const navigate = useNavigate();
   const [{ loading, error, users, loadingDelete, successDelete }, dispatch] =
     useReducer(reducer, {
@@ -55,15 +48,12 @@ export default function UserListScreen() {
     const fetchData = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
-        const { data } = await axios.get(`/api/users`, {
+        const { data } = await axios.get('/api/users', {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
-        dispatch({
-          type: 'FETCH_FAIL',
-          payload: getError(err),
-        });
+        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
       }
     };
 
@@ -75,35 +65,39 @@ export default function UserListScreen() {
   }, [userInfo, successDelete]);
 
   const deleteHandler = async (user) => {
-    if (window.confirm('Are you sure to delete?')) {
+    if (user._id === userInfo._id) {
+      toast.error("You cannot delete yourself!");
+      return;
+    }
+
+    if (window.confirm('Are you sure to delete this user?')) {
       try {
         dispatch({ type: 'DELETE_REQUEST' });
         await axios.delete(`/api/users/${user._id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        toast.success('user deleted successfully');
+        toast.success('User deleted successfully');
         dispatch({ type: 'DELETE_SUCCESS' });
-      } catch (error) {
-        toast.error(getError(error));
-        dispatch({
-          type: 'DELETE_FAIL',
-        });
+      } catch (err) {
+        toast.error(getError(err));
+        dispatch({ type: 'DELETE_FAIL' });
       }
     }
   };
+
   return (
     <div>
       <Helmet>
         <title>Users</title>
       </Helmet>
       <h1>Users</h1>
-      {loadingDelete && <Loading></Loading>}
+      {loadingDelete && <Loading />}
       {loading ? (
-        <Loading></Loading>
+        <Loading />
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
-        <table className="table">
+        <table className="table table-striped table-bordered table-hover">
           <thead>
             <tr>
               <th>ID</th>
@@ -133,6 +127,7 @@ export default function UserListScreen() {
                     type="button"
                     variant="danger"
                     onClick={() => deleteHandler(user)}
+                    disabled={loadingDelete}
                   >
                     Delete
                   </Button>

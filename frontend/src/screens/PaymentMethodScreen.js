@@ -13,24 +13,24 @@ export default function PaymentMethodScreen() {
     cart: { shippingAddress, paymentMethod },
   } = state;
 
-  const [paymentMethodName, setPaymentMethod] = useState(
-    paymentMethod || 'PayPal'
-  );
+  const [paymentMethodName, setPaymentMethod] = useState(paymentMethod || 'PayPal');
 
   useEffect(() => {
     if (!shippingAddress.address) {
       navigate('/shipping');
     }
   }, [shippingAddress, navigate]);
+
   const submitHandler = (e) => {
     e.preventDefault();
     ctxDispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentMethodName });
     localStorage.setItem('paymentMethod', paymentMethodName);
     navigate('/placeorder');
   };
+
   return (
     <div>
-      <CheckoutSteps step1 step2 step3></CheckoutSteps>
+      <CheckoutSteps step1 step2 step3 />
       <div className="container small-container">
         <Helmet>
           <title>Payment Method</title>
@@ -51,9 +51,9 @@ export default function PaymentMethodScreen() {
             <Form.Check
               type="radio"
               id="COD"
-              label="COD"
+              label="Cash On Delivery"
               value="Cash On Delivery"
-              checked={paymentMethodName === 'COD'}
+              checked={paymentMethodName === 'Cash On Delivery'}
               onChange={(e) => setPaymentMethod(e.target.value)}
             />
           </div>

@@ -10,7 +10,7 @@ import Loading from '../components/Loading';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
 
-
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -26,52 +26,31 @@ const reducer = (state, action) => {
       };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
-
     case 'CREATE_REQUEST':
       return { ...state, loadingCreate: true };
     case 'CREATE_SUCCESS':
-      return {
-        ...state,
-        loadingCreate: false,
-      };
+      return { ...state, loadingCreate: false };
     case 'CREATE_FAIL':
-      return { ...state, loadingCreate: false }; 
+      return { ...state, loadingCreate: false };
     case 'DELETE_REQUEST':
       return { ...state, loadingDelete: true, successDelete: false };
     case 'DELETE_SUCCESS':
-      return {
-        ...state,
-        loadingDelete: false,
-        successDelete: true,
-      };
+      return { ...state, loadingDelete: false, successDelete: true };
     case 'DELETE_FAIL':
       return { ...state, loadingDelete: false, successDelete: false };
-
     case 'DELETE_RESET':
-      return { ...state, loadingDelete: false, successDelete: false };     
-
+      return { ...state, loadingDelete: false, successDelete: false };
     default:
       return state;
   }
-
 };
 
 export default function ProductListScreen() {
-  const [
-    {
-      loading,
-      error,
-      products,
-      pages,
-      loadingCreate,
-      loadingDelete,
-      successDelete,
-    },
-    dispatch,
-  ] = useReducer(reducer, {
-    loading: true,
-    error: '',
-  });
+  const [{ loading, error, products, pages, loadingCreate, loadingDelete, successDelete }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      error: '',
+    });
 
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -84,14 +63,16 @@ export default function ProductListScreen() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`/api/products/admin?page=${page} `, {
+        dispatch({ type: 'FETCH_REQUEST' });
+        const { data } = await axios.get(`${BACKEND_URL}/api/products/admin?page=${page}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
-      } catch (err) {}
+      } catch (err) {
+        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+      }
     };
-    
+
     if (successDelete) {
       dispatch({ type: 'DELETE_RESET' });
     } else {
@@ -99,62 +80,51 @@ export default function ProductListScreen() {
     }
   }, [page, userInfo, successDelete]);
 
-    const createHandler = async () => {
+  const createHandler = async () => {
     if (window.confirm('Are you sure to create?')) {
       try {
         dispatch({ type: 'CREATE_REQUEST' });
         const { data } = await axios.post(
-          '/api/products',
+          `${BACKEND_URL}/api/products`,
           {},
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          }
+          { headers: { Authorization: `Bearer ${userInfo.token}` } }
         );
-        toast.success('product created successfully');
+        toast.success('Product created successfully');
         dispatch({ type: 'CREATE_SUCCESS' });
         navigate(`/admin/product/${data.product._id}`);
       } catch (err) {
-        toast.error(getError(error));
-        dispatch({
-          type: 'CREATE_FAIL',
-        });
+        toast.error(getError(err));
+        dispatch({ type: 'CREATE_FAIL' });
       }
     }
   };
 
-
-const deleteHandler = async (product) => {
-  if (window.confirm('Are you sure to delete?')) {
-    try {
-      await axios.delete(`/api/products/${product._id}`, {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      });
-      toast.success('Product deleted successfully');
-      // Reload the product list
-      dispatch({ type: 'FETCH_REQUEST' });
-      const { data } = await axios.get(`/api/products/admin?page=${page}`, {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      });
-      dispatch({ type: 'FETCH_SUCCESS', payload: data });
-    } catch (err) {
-      toast.error(getError(err));
+  const deleteHandler = async (product) => {
+    if (window.confirm('Are you sure to delete?')) {
+      try {
+        dispatch({ type: 'DELETE_REQUEST' });
+        await axios.delete(`${BACKEND_URL}/api/products/${product._id}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        toast.success('Product deleted successfully');
+        dispatch({ type: 'DELETE_SUCCESS' });
+      } catch (err) {
+        toast.error(getError(err));
+        dispatch({ type: 'DELETE_FAIL' });
+      }
     }
-  }
-};
+  };
 
   return (
     <div>
-      
-    <Row>
+      <Row>
         <Col>
           <h1>Products</h1>
         </Col>
-        <Col className="col text-end">
-          <div>
-            <Button type="button" onClick={createHandler}>
-              Create Product
-            </Button>
-          </div>
+        <Col className="text-end">
+          <Button type="button" onClick={createHandler}>
+            Create Product
+          </Button>
         </Col>
       </Row>
 
@@ -162,7 +132,7 @@ const deleteHandler = async (product) => {
       {loadingDelete && <Loading />}
 
       {loading ? (
-        <Loading></Loading>
+        <Loading />
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
@@ -195,11 +165,7 @@ const deleteHandler = async (product) => {
                       Edit
                     </Button>
                     &nbsp;
-                    <Button
-                      type="button"
-                      variant="danger"
-                      onClick={() => deleteHandler(product)}
-                    >
+                    <Button type="button" variant="danger" onClick={() => deleteHandler(product)}>
                       Delete
                     </Button>
                   </td>
@@ -207,6 +173,7 @@ const deleteHandler = async (product) => {
               ))}
             </tbody>
           </table>
+
           <div>
             {[...Array(pages).keys()].map((x) => (
               <Link

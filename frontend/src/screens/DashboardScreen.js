@@ -9,6 +9,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 
+// Backend URL
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
@@ -27,7 +30,7 @@ const reducer = (state, action) => {
 };
 
 export default function DashboardScreen() {
-    const [{ loading, summary, error }, dispatch] = useReducer(reducer, {
+  const [{ loading, summary, error }, dispatch] = useReducer(reducer, {
     loading: true,
     error: '',
   });
@@ -36,8 +39,9 @@ export default function DashboardScreen() {
 
   useEffect(() => {
     const fetchData = async () => {
+      dispatch({ type: 'FETCH_REQUEST' });
       try {
-        const { data } = await axios.get('/api/orders/summary', {
+        const { data } = await axios.get(`${BACKEND_URL}/api/orders/summary`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
@@ -77,7 +81,7 @@ export default function DashboardScreen() {
               <Card>
                 <Card.Body>
                   <Card.Title>
-                    {summary.orders && summary.users[0]
+                    {summary.orders && summary.orders[0]
                       ? summary.orders[0].numOrders
                       : 0}
                   </Card.Title>
@@ -90,11 +94,11 @@ export default function DashboardScreen() {
                 <Card.Body>
                   <Card.Title>
                     $
-                    {summary.orders && summary.users[0]
+                    {summary.orders && summary.orders[0]
                       ? summary.orders[0].totalSales.toFixed(2)
                       : 0}
                   </Card.Title>
-                  <Card.Text> Orders</Card.Text>
+                  <Card.Text> Sales</Card.Text>
                 </Card.Body>
               </Card>
             </Col>
@@ -113,7 +117,7 @@ export default function DashboardScreen() {
                   ['Date', 'Sales'],
                   ...summary.dailyOrders.map((x) => [x._id, x.sales]),
                 ]}
-              ></Chart>
+              />
             )}
           </div>
           <div className="my-3">
@@ -130,7 +134,7 @@ export default function DashboardScreen() {
                   ['Category', 'Products'],
                   ...summary.productCategories.map((x) => [x._id, x.count]),
                 ]}
-              ></Chart>
+              />
             )}
           </div>
         </>

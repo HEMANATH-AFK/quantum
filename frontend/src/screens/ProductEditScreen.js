@@ -11,6 +11,8 @@ import Loading from '../components/Loading';
 import MessageBox from '../components/MessageBox';
 import Button from 'react-bootstrap/Button';
 
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
@@ -28,25 +30,20 @@ const reducer = (state, action) => {
     case 'UPLOAD_REQUEST':
       return { ...state, loadingUpload: true, errorUpload: '' };
     case 'UPLOAD_SUCCESS':
-      return {
-        ...state,
-        loadingUpload: false,
-        errorUpload: '',
-      };
+      return { ...state, loadingUpload: false, errorUpload: '' };
     case 'UPLOAD_FAIL':
       return { ...state, loadingUpload: false, errorUpload: action.payload };
-
     default:
       return state;
   }
 };
+
 export default function ProductEditScreen() {
   const navigate = useNavigate();
-  const params = useParams(); // /product/:id
-  const { id: productId } = params;
-
+  const { id: productId } = useParams();
   const { state } = useContext(Store);
   const { userInfo } = state;
+
   const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] = useReducer(reducer, {
     loading: true,
     error: '',
@@ -65,7 +62,7 @@ export default function ProductEditScreen() {
     const fetchData = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
-        const { data } = await axios.get(`/api/products/${productId}`);
+        const { data } = await axios.get(`${BACKEND_URL}/api/products/${productId}`);
         setName(data.name);
         setSlug(data.slug);
         setPrice(data.price);
@@ -76,10 +73,7 @@ export default function ProductEditScreen() {
         setDescription(data.description);
         dispatch({ type: 'FETCH_SUCCESS' });
       } catch (err) {
-        dispatch({
-          type: 'FETCH_FAIL',
-          payload: getError(err),
-        });
+        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
       }
     };
     fetchData();
@@ -90,25 +84,11 @@ export default function ProductEditScreen() {
     try {
       dispatch({ type: 'UPDATE_REQUEST' });
       await axios.put(
-        `/api/products/${productId}`,
-        {
-          _id: productId,
-          name,
-          slug,
-          price,
-          image,
-          category,
-          brand,
-          countInStock,
-          description,
-        },
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
+        `${BACKEND_URL}/api/products/${productId}`,
+        { _id: productId, name, slug, price, image, category, brand, countInStock, description },
+        { headers: { Authorization: `Bearer ${userInfo.token}` } }
       );
-      dispatch({
-        type: 'UPDATE_SUCCESS',
-      });
+      dispatch({ type: 'UPDATE_SUCCESS' });
       toast.success('Product updated successfully');
       navigate('/admin/products');
     } catch (err) {
@@ -119,20 +99,21 @@ export default function ProductEditScreen() {
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
-    const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
+    const formData = new FormData();
+    formData.append('file', file);
     try {
       dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post('/api/upload', bodyFormData, {
+      const { data } = await axios.post(`${BACKEND_URL}/api/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          authorization: `Bearer ${userInfo.token}`,
+          Authorization: `Bearer ${userInfo.token}`,
         },
       });
-      dispatch({ type: 'UPLOAD_SUCCESS' });
-
-      toast.success('Image uploaded successfully');
       setImage(data.secure_url);
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      
+      toast.success('Image uploaded successfully');
+
     } catch (err) {
       toast.error(getError(err));
       dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
@@ -142,48 +123,36 @@ export default function ProductEditScreen() {
   return (
     <Container className="small-container">
       <Helmet>
-        <title>Edit Product ${productId}</title>
+        <title>Edit Product {productId}</title>
       </Helmet>
       <h1>Edit Product {productId}</h1>
 
       {loading ? (
-        <Loading></Loading>
+        <Loading />
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
         <Form onSubmit={submitHandler}>
           <Form.Group className="mb-3" controlId="name">
             <Form.Label>Name</Form.Label>
-            <Form.Control
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+            <Form.Control value={name} onChange={(e) => setName(e.target.value)} required />
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="slug">
             <Form.Label>Slug</Form.Label>
-            <Form.Control
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              required
-            />
+            <Form.Control value={slug} onChange={(e) => setSlug(e.target.value)} required />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="name">
+
+          <Form.Group className="mb-3" controlId="price">
             <Form.Label>Price</Form.Label>
-            <Form.Control
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              required
-            />
+            <Form.Control value={price} onChange={(e) => setPrice(e.target.value)} required />
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="image">
-            <Form.Label>Image File</Form.Label>
-            <Form.Control
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              required
-            />
+            <Form.Label>Image URL</Form.Label>
+            <Form.Control value={image} onChange={(e) => setImage(e.target.value)} required />
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="imageFile">
             <Form.Label>Upload File</Form.Label>
             <Form.Control type="file" onChange={uploadFileHandler} />
@@ -192,41 +161,26 @@ export default function ProductEditScreen() {
 
           <Form.Group className="mb-3" controlId="category">
             <Form.Label>Category</Form.Label>
-            <Form.Control
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            />
+            <Form.Control value={category} onChange={(e) => setCategory(e.target.value)} required />
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="brand">
             <Form.Label>Brand</Form.Label>
-            <Form.Control
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              required
-            />
+            <Form.Control value={brand} onChange={(e) => setBrand(e.target.value)} required />
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="countInStock">
             <Form.Label>Count In Stock</Form.Label>
-            <Form.Control
-              value={countInStock}
-              onChange={(e) => setCountInStock(e.target.value)}
-              required
-            />
+            <Form.Control value={countInStock} onChange={(e) => setCountInStock(e.target.value)} required />
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="description">
             <Form.Label>Description</Form.Label>
-            <Form.Control
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
+            <Form.Control value={description} onChange={(e) => setDescription(e.target.value)} required />
           </Form.Group>
+
           <div className="mb-3">
-  
-            <Button disabled={loadingUpdate} type="submit">
-              Update
-            </Button>
+            <Button disabled={loadingUpdate} type="submit">Update</Button>
             {loadingUpdate && <Loading />}
           </div>
         </Form>

@@ -1,29 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
+import { Helmet } from 'react-helmet-async';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import Loading from '../components/Loading';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
-import { useContext } from 'react';
 import { Store } from '../Store';
 
 export default function UserEditScreen() {
   const navigate = useNavigate();
-  const params = useParams();
-  const { id: userId } = params;
-
+  const { id: userId } = useParams();
   const { state } = useContext(Store);
   const { userInfo } = state;
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState({ name: '', email: '', isAdmin: false });
+  const [loading, setLoading] = useState(true);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [error, setError] = useState('');
 
+  // Fetch user details
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -31,9 +28,7 @@ export default function UserEditScreen() {
         const { data } = await axios.get(`/api/users/${userId}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        setName(data.name);
-        setEmail(data.email);
-        setIsAdmin(data.isAdmin);
+        setUserData({ name: data.name, email: data.email, isAdmin: data.isAdmin });
         setLoading(false);
       } catch (err) {
         setError(getError(err));
@@ -49,7 +44,7 @@ export default function UserEditScreen() {
       setLoadingUpdate(true);
       await axios.put(
         `/api/users/${userId}`,
-        { name, email, isAdmin },
+        { ...userData },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         }
@@ -63,8 +58,11 @@ export default function UserEditScreen() {
   };
 
   return (
-    <div>
-      <h1>Edit User {userId}</h1>
+    <div className="container small-container">
+      <Helmet>
+        <title>Edit User {userId}</title>
+      </Helmet>
+      <h1 className="my-3">Edit User {userId}</h1>
       {loading ? (
         <Loading />
       ) : error ? (
@@ -74,29 +72,33 @@ export default function UserEditScreen() {
           <Form.Group className="mb-3" controlId="name">
             <Form.Label>Name</Form.Label>
             <Form.Control
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={userData.name}
+              onChange={(e) => setUserData({ ...userData, name: e.target.value })}
               required
             />
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Email</Form.Label>
             <Form.Control
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              value={userData.email}
+              onChange={(e) => setUserData({ ...userData, email: e.target.value })}
               required
             />
           </Form.Group>
+
           <Form.Check
             type="checkbox"
             id="isAdmin"
             label="Is Admin"
-            checked={isAdmin}
-            onChange={(e) => setIsAdmin(e.target.checked)}
+            checked={userData.isAdmin}
+            onChange={(e) => setUserData({ ...userData, isAdmin: e.target.checked })}
           />
+
           <div className="mt-3">
             <Button type="submit" disabled={loadingUpdate}>
-              Update
+              {loadingUpdate ? 'Updating...' : 'Update'}
             </Button>
           </div>
         </Form>

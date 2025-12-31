@@ -1,37 +1,39 @@
 import Axios from 'axios';
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import Container from 'react-bootstrap/Container'
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { Helmet } from 'react-helmet-async'
+import { Helmet } from 'react-helmet-async';
 import { useContext, useEffect, useState } from 'react';
 import { Store } from '../Store';
 import { toast } from 'react-toastify';
-import { getError } from '../utils'
+import { getError } from '../utils';
 
 export default function SigninScreen() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { search } = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get('redirect')
+  const redirectInUrl = new URLSearchParams(search).get('redirect');
   const redirect = redirectInUrl ? redirectInUrl : '/';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
+
   const submitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const { data } = await Axios.post('/api/users/signin', {
-        email,
-        password,
-      });
-      ctxDispatch({ type: 'USER_SIGNIN', payload: data })
-      localStorage.setItem('userInfo', JSON.stringify(data))
-      navigate(redirect || '/')
+      const { data } = await Axios.post('/api/users/signin', { email, password });
+      ctxDispatch({ type: 'USER_SIGNIN', payload: data });
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      navigate(redirect || '/');
     } catch (err) {
       toast.error(getError(err));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,6 +54,7 @@ export default function SigninScreen() {
           <Form.Label>Email</Form.Label>
           <Form.Control
             type="email"
+            value={email}
             required
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -60,18 +63,21 @@ export default function SigninScreen() {
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
+            value={password}
             required
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
         <div className="mb-3">
-          <Button type="submit">Sign In</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
+          </Button>
         </div>
         <div className="mb-3">
           New customer?{' '}
           <Link to={`/signup?redirect=${redirect}`}>Create your account</Link>
         </div>
- 
+        
       </Form>
     </Container>
   );

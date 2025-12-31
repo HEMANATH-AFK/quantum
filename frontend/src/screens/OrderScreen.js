@@ -2,19 +2,20 @@ import axios from 'axios';
 import React, { useContext, useEffect, useReducer } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import { Link } from 'react-router-dom';
 import Loading from '../components/Loading';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
 import { toast } from 'react-toastify';
 
+// Backend URL
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
 
 function reducer(state, action) {
   switch (action.type) {
@@ -24,7 +25,7 @@ function reducer(state, action) {
       return { ...state, loading: false, order: action.payload, error: '' };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
-        case 'PAY_REQUEST':
+    case 'PAY_REQUEST':
       return { ...state, loadingPay: true };
     case 'PAY_SUCCESS':
       return { ...state, loadingPay: false, successPay: true };
@@ -39,34 +40,21 @@ function reducer(state, action) {
     case 'DELIVER_FAIL':
       return { ...state, loadingDeliver: false };
     case 'DELIVER_RESET':
-      return {
-        ...state,
-        loadingDeliver: false,
-        successDeliver: false,
-      };
-
+      return { ...state, loadingDeliver: false, successDeliver: false };
     default:
       return state;
   }
 }
+
 export default function OrderScreen() {
   const { state } = useContext(Store);
   const { userInfo } = state;
-
   const params = useParams();
   const { id: orderId } = params;
   const navigate = useNavigate();
 
   const [
-    {
-      loading,
-      error,
-      order,
-      successPay,
-      loadingPay,
-      loadingDeliver,
-      successDeliver,
-    },
+    { loading, error, order, successPay, loadingPay, loadingDeliver, successDeliver },
     dispatch,
   ] = useReducer(reducer, {
     loading: true,
@@ -79,31 +67,21 @@ export default function OrderScreen() {
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
   function createOrder(data, actions) {
-    return actions.order
-      .create({
-        purchase_units: [
-          {
-            amount: { value: order.totalPrice },
-          },
-        ],
-      })
-      .then((orderID) => {
-        return orderID;
-      });
+    return actions.order.create({
+      purchase_units: [{ amount: { value: order.totalPrice } }],
+    }).then((orderID) => orderID);
   }
 
   function onApprove(data, actions) {
-    return actions.order.capture().then(async function (details) {
+    return actions.order.capture().then(async (details) => {
       try {
         dispatch({ type: 'PAY_REQUEST' });
-        const { data } = await axios.put(
-          `/api/orders/${order._id}/pay`,
+        const { data: res } = await axios.put(
+          `${BACKEND_URL}/api/orders/${order._id}/pay`,
           details,
-          {
-            headers: { authorization: `Bearer ${userInfo.token}` },
-          }
+          { headers: { authorization: `Bearer ${userInfo.token}` } }
         );
-        dispatch({ type: 'PAY_SUCCESS', payload: data });
+        dispatch({ type: 'PAY_SUCCESS', payload: res });
         toast.success('Order is paid');
       } catch (err) {
         dispatch({ type: 'PAY_FAIL', payload: getError(err) });
@@ -111,76 +89,48 @@ export default function OrderScreen() {
       }
     });
   }
+
   function onError(err) {
     toast.error(getError(err));
   }
 
-useEffect(() => {
-  const fetchOrder = async () => {
-    try {
-      dispatch({ type: 'FETCH_REQUEST' });
-      const { data } = await axios.get(`/api/orders/${orderId}`, {
-        headers: { authorization: `Bearer ${userInfo.token}` },
-      });
-      dispatch({ type: 'FETCH_SUCCESS', payload: data });
-    } catch (err) {
-      dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
-    }
-  };
-
-  if (!userInfo) {
-    return navigate('/login');
-  }
-
-    if (
-      !order._id ||
-      successPay ||
-      successDeliver ||
-      (order._id && order._id !== orderId)
-    ) {
-    fetchOrder();
-          if (successPay) {
-        dispatch({ type: 'PAY_RESET' });
-      }
-            if (successDeliver) {
-        dispatch({ type: 'DELIVER_RESET' });
-      }
-    } else {
-      const loadPaypalScript = async () => {
-        const { data: clientId } = await axios.get('/api/keys/paypal', {
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        dispatch({ type: 'FETCH_REQUEST' });
+        const { data } = await axios.get(`${BACKEND_URL}/api/orders/${orderId}`, {
           headers: { authorization: `Bearer ${userInfo.token}` },
         });
-        paypalDispatch({
-          type: 'resetOptions',
-          value: {
-            'client-id': clientId,
-            currency: 'USD',
-          },
+        dispatch({ type: 'FETCH_SUCCESS', payload: data });
+      } catch (err) {
+        dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
+      }
+    };
+
+    if (!userInfo) return navigate('/login');
+
+    if (!order._id || successPay || successDeliver || (order._id && order._id !== orderId)) {
+      fetchOrder();
+      if (successPay) dispatch({ type: 'PAY_RESET' });
+      if (successDeliver) dispatch({ type: 'DELIVER_RESET' });
+    } else {
+      const loadPaypalScript = async () => {
+        const { data: clientId } = await axios.get(`${BACKEND_URL}/api/keys/paypal`, {
+          headers: { authorization: `Bearer ${userInfo.token}` },
         });
+        paypalDispatch({ type: 'resetOptions', value: { 'client-id': clientId, currency: 'USD' } });
         paypalDispatch({ type: 'setLoadingStatus', value: 'pending' });
       };
       loadPaypalScript();
-  }
-  }, [
-    order,
-    userInfo,
-    orderId,
-    navigate,
-    paypalDispatch,
-    successPay,
-    successDeliver,
-  ]);
+    }
+  }, [order, userInfo, orderId, navigate, paypalDispatch, successPay, successDeliver]);
 
   async function deliverOrderHandler() {
     try {
       dispatch({ type: 'DELIVER_REQUEST' });
-      const { data } = await axios.put(
-        `/api/orders/${order._id}/deliver`,
-        {},
-        {
-          headers: { authorization: `Bearer ${userInfo.token}` },
-        }
-      );
+      const { data } = await axios.put(`${BACKEND_URL}/api/orders/${order._id}/deliver`, {}, {
+        headers: { authorization: `Bearer ${userInfo.token}` },
+      });
       dispatch({ type: 'DELIVER_SUCCESS', payload: data });
       toast.success('Order is delivered');
     } catch (err) {
@@ -190,7 +140,7 @@ useEffect(() => {
   }
 
   return loading ? (
-    <Loading></Loading>
+    <Loading />
   ) : error ? (
     <MessageBox variant="danger">{error}</MessageBox>
   ) : (
@@ -206,19 +156,17 @@ useEffect(() => {
               <Card.Title>Shipping</Card.Title>
               <Card.Text>
                 <strong>Name:</strong> {order.shippingAddress.fullName} <br />
-                <strong>Address: </strong> {order.shippingAddress.address},
-                {order.shippingAddress.city}, {order.shippingAddress.postalCode}
-                ,{order.shippingAddress.country}
+                <strong>Address: </strong> {order.shippingAddress.address}, {order.shippingAddress.city},{' '}
+                {order.shippingAddress.postalCode}, {order.shippingAddress.country}
               </Card.Text>
               {order.isDelivered ? (
-                <MessageBox variant="success">
-                  Delivered at {order.deliveredAt}
-                </MessageBox>
+                <MessageBox variant="success">Delivered at {order.deliveredAt}</MessageBox>
               ) : (
                 <MessageBox variant="danger">Not Delivered</MessageBox>
               )}
             </Card.Body>
           </Card>
+
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Payment</Card.Title>
@@ -226,9 +174,7 @@ useEffect(() => {
                 <strong>Method:</strong> {order.paymentMethod}
               </Card.Text>
               {order.isPaid ? (
-                <MessageBox variant="success">
-                  Paid at {order.paidAt}
-                </MessageBox>
+                <MessageBox variant="success">Paid at {order.paidAt}</MessageBox>
               ) : (
                 <MessageBox variant="danger">Not Paid</MessageBox>
               )}
@@ -243,11 +189,7 @@ useEffect(() => {
                   <ListGroup.Item key={item._id}>
                     <Row className="align-items-center">
                       <Col md={6}>
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="img-fluid rounded img-thumbnail"
-                        ></img>{' '}
+                        <img src={item.image} alt={item.name} className="img-fluid rounded img-thumbnail" />{' '}
                         <Link to={`/product/${item.slug}`}>{item.name}</Link>
                       </Col>
                       <Col md={3}>
@@ -261,6 +203,7 @@ useEffect(() => {
             </Card.Body>
           </Card>
         </Col>
+
         <Col md={4}>
           <Card className="mb-3">
             <Card.Body>
@@ -300,28 +243,22 @@ useEffect(() => {
                       <Loading />
                     ) : (
                       <div>
-                        <PayPalButtons
-                          createOrder={createOrder}
-                          onApprove={onApprove}
-                          onError={onError}
-                        ></PayPalButtons>
+                        <PayPalButtons createOrder={createOrder} onApprove={onApprove} onError={onError} />
                       </div>
                     )}
-                    {loadingPay && <Loading></Loading>}
+                    {loadingPay && <Loading />}
                   </ListGroup.Item>
-                )} 
-
-
+                )}
                 {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
                   <ListGroup.Item>
-                    {loadingDeliver && <Loading></Loading>}
+                    {loadingDeliver && <Loading />}
                     <div className="d-grid">
                       <Button type="button" onClick={deliverOrderHandler}>
                         Deliver Order
                       </Button>
                     </div>
                   </ListGroup.Item>
-                )}               
+                )}
               </ListGroup>
             </Card.Body>
           </Card>

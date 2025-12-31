@@ -9,46 +9,37 @@ import CheckoutSteps from '../components/CheckoutSteps';
 export default function ShippingAddressScreen() {
   const navigate = useNavigate();
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const {
-    userInfo,
-    cart: { shippingAddress },
-  } = state;
-  const [fullName, setFullName] = useState(shippingAddress.fullName || '');
-  const [address, setAddress] = useState(shippingAddress.address || '');
-  const [city, setCity] = useState(shippingAddress.city || '');
-  const [postalCode, setPostalCode] = useState(
-    shippingAddress.postalCode || ''
-  );
+  const { userInfo, cart: { shippingAddress } } = state;
+
+  const [shipping, setShipping] = useState({
+    fullName: shippingAddress.fullName || '',
+    address: shippingAddress.address || '',
+    city: shippingAddress.city || '',
+    postalCode: shippingAddress.postalCode || '',
+    country: shippingAddress.country || '',
+  });
+
   useEffect(() => {
     if (!userInfo) {
       navigate('/signin?redirect=/shipping');
     }
   }, [userInfo, navigate]);
-  const [country, setCountry] = useState(shippingAddress.country || '');
+
   const submitHandler = (e) => {
     e.preventDefault();
     ctxDispatch({
       type: 'SAVE_SHIPPING_ADDRESS',
-      payload: {
-        fullName,
-        address,
-        city,
-        postalCode,
-        country,
-      },
+      payload: shipping,
     });
-    localStorage.setItem(
-      'shippingAddress',
-      JSON.stringify({
-        fullName,
-        address,
-        city,
-        postalCode,
-        country,
-      })
-    );
+    localStorage.setItem('shippingAddress', JSON.stringify(shipping));
     navigate('/payment');
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setShipping({ ...shipping, [name]: value });
+  };
+
   return (
     <div>
       <Helmet>
@@ -59,46 +50,18 @@ export default function ShippingAddressScreen() {
       <div className="container small-container">
         <h1 className="my-3">Shipping Address</h1>
         <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3" controlId="fullName">
-            <Form.Label>Full Name</Form.Label>
-            <Form.Control
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="address">
-            <Form.Label>Address</Form.Label>
-            <Form.Control
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="city">
-            <Form.Label>City</Form.Label>
-            <Form.Control
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="postalCode">
-            <Form.Label>Postal Code</Form.Label>
-            <Form.Control
-              value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="country">
-            <Form.Label>Country</Form.Label>
-            <Form.Control
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              required
-            />
-          </Form.Group>
+          {['fullName', 'address', 'city', 'postalCode', 'country'].map((field) => (
+            <Form.Group className="mb-3" controlId={field} key={field}>
+              <Form.Label>{field === 'fullName' ? 'Full Name' : field.charAt(0).toUpperCase() + field.slice(1)}</Form.Label>
+              <Form.Control
+                name={field}
+                value={shipping[field]}
+                onChange={handleChange}
+                required
+              />
+            </Form.Group>
+          ))}
+
           <div className="mb-3">
             <Button variant="primary" type="submit">
               Continue
