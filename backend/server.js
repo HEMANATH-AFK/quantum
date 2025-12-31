@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import  data  from './data.js';
 import mongoose from 'mongoose'
 import dotenv from 'dotenv';
@@ -24,13 +25,20 @@ mongoose
 
 const app = express();
 
+app.use(cors({
+  origin: 'https://quantumcart-2v6l.onrender.com',
+  credentials: true,
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/api/keys/paypal', (req, res) => {
   res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
 });
-
 
 app.use('/api/upload', uploadRouter);
 app.use('/api/seed', seedRouter )
