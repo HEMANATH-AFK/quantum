@@ -12,6 +12,8 @@ import MessageBox from '../components/MessageBox';
 import Button from 'react-bootstrap/Button';
 import Product from '../components/Product';
 
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
+
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
@@ -70,7 +72,7 @@ export default function SearchScreen() {
       dispatch({ type: 'FETCH_REQUEST' });
       try {
         const { data } = await axios.get(
-          `/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}`
+          `${BACKEND_URL}/api/products/search?page=${page}&query=${query}&category=${category}&price=${price}&rating=${rating}&order=${order}`
         );
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {

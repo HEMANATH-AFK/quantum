@@ -9,6 +9,8 @@ import { getError } from "../utils";
 import { Store } from "../Store";
 import MessageBox from "../components/MessageBox";
 
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
+
 const reducer = (state, action) => {
   switch (action.type) {
     case "FETCH_REQUEST":
@@ -39,7 +41,7 @@ export default function ProductScreen() {
     const fetchData = async () => {
       dispatch({ type: "FETCH_REQUEST" });
       try {
-        const { data } = await axios.get(`/api/products/slug/${slug}`);
+        const { data } = await axios.get(`${BACKEND_URL}/api/products/slug/${slug}`);
         dispatch({ type: "FETCH_SUCCESS", payload: data });
       } catch (err) {
         dispatch({ type: "FETCH_FAIL", payload: getError(err) });
@@ -52,7 +54,7 @@ export default function ProductScreen() {
     const existItem = cart.cartItems.find((x) => x._id === product._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
 
-    const { data } = await axios.get(`/api/products/${product._id}`);
+    const { data } = await axios.get(`${BACKEND_URL}/api/products/${product._id}`);
     if (data.countInStock < quantity) {
       window.alert("Sorry. Product is out of stock");
       return;

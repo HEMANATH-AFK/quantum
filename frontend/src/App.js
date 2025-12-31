@@ -35,6 +35,8 @@ import SearchBox from './components/SearchBox';
 import { Navbar, Container, Nav, Badge, Button, NavDropdown } from 'react-bootstrap';
 import axios from 'axios';
 
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
+
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
@@ -46,7 +48,7 @@ function App() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get('/api/products/categories');
+        const { data } = await axios.get(`${BACKEND_URL}/api/products/categories`);
         setCategories(data);
       } catch (err) {
         toast.error(getError(err));
