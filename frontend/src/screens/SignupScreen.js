@@ -9,6 +9,8 @@ import { Store } from '../Store';
 import { toast } from 'react-toastify';
 import { getError } from '../utils';
 
+const BACKEND_URL = process.env.BACKEND_URL || 'https://quantumafk-backend.onrender.com';
+
 export default function SignupScreen() {
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -32,7 +34,7 @@ export default function SignupScreen() {
     }
     setLoading(true);
     try {
-      const { data } = await Axios.post('/api/users/signup', { name, email, password });
+      const { data } = await Axios.post(`${BACKEND_URL}/api/users/signup`, { name, email, password });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
       navigate(redirect || '/');
