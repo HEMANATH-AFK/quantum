@@ -2,7 +2,6 @@
 
 QuantumCart is a premium, full-stack MERN (MongoDB, Express, React, Node.js) e-commerce platform designed for high performance and a professional user experience. 
 
-![Screenshot](https://via.placeholder.com/1200x600?text=QuantumCart+E-commerce)
 
 ## 🚀 Features
 
