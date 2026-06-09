@@ -5,6 +5,7 @@ import Loader from '../components/Loader';
 import { toast } from 'react-toastify';
 import { Trash2, Edit, Plus, Package, Upload } from 'lucide-react';
 import { useRef } from 'react';
+import { FadeIn } from '@hemanath-afk/afk-motion';
 
 const ProductListScreen = () => {
   const { pageNumber } = useParams();
@@ -64,84 +65,86 @@ const ProductListScreen = () => {
   };
 
   return (
-    <div className="space-y-8 text-left">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-4">
-            <div className="bg-primary-50 p-3 rounded-2xl">
-                <Package className="w-8 h-8 text-primary-600" />
-            </div>
-            <h1 className="text-4xl font-black text-gray-900 tracking-tight">Product <span className="text-primary-600">Inventory</span></h1>
+    <FadeIn duration={0.4}>
+      <div className="space-y-8 text-left transition-colors duration-300">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-4">
+              <div className="bg-primary-50 dark:bg-primary-950/40 p-3 rounded-2xl">
+                  <Package className="w-8 h-8 text-primary-600 dark:text-primary-400" />
+              </div>
+              <h1 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Product <span className="text-primary-600 dark:text-primary-400">Inventory</span></h1>
+          </div>
+          <div className="flex items-center space-x-2">
+              <input 
+                  type="file" 
+                  accept=".csv" 
+                  ref={fileInputRef} 
+                  onChange={uploadFileHandler} 
+                  className="hidden" 
+              />
+              <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="btn-outline border-primary-200 dark:border-primary-800 text-primary-700 dark:text-primary-300 py-3 px-6 flex items-center font-black bg-primary-50 dark:bg-primary-950/20 hover:bg-primary-100 dark:hover:bg-primary-900/40 rounded-2xl cursor-pointer"
+              >
+                  <Upload className="w-5 h-5 mr-2" /> Upload CSV
+              </button>
+              <button
+              onClick={createProductHandler}
+              className="btn-primary py-3 px-6 flex items-center font-black rounded-2xl cursor-pointer"
+              >
+              <Plus className="w-5 h-5 mr-2" /> Add Product
+              </button>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-            <input 
-                type="file" 
-                accept=".csv" 
-                ref={fileInputRef} 
-                onChange={uploadFileHandler} 
-                className="hidden" 
-            />
-            <button
-                onClick={() => fileInputRef.current?.click()}
-                className="btn-outline border-primary-200 text-primary-700 py-3 px-6 flex items-center font-black bg-primary-50 hover:bg-primary-100"
-            >
-                <Upload className="w-5 h-5 mr-2" /> Upload CSV
-            </button>
-            <button
-            onClick={createProductHandler}
-            className="btn-primary py-3 px-6 flex items-center font-black"
-            >
-            <Plus className="w-5 h-5 mr-2" /> Add Product
-            </button>
-        </div>
-      </div>
 
-      {loadingDelete && <Loader className="w-full h-2" />}
-      {loadingCreate && <Loader className="w-full h-2" />}
-      {loadingUpload && <Loader className="w-full h-2" />}
+        {loadingDelete && <Loader className="w-full h-2" />}
+        {loadingCreate && <Loader className="w-full h-2" />}
+        {loadingUpload && <Loader className="w-full h-2" />}
 
-      {isLoading ? (
-        <Loader className="w-full h-96" />
-      ) : error ? (
-        <Message variant="danger">{error?.data?.message || error.error}</Message>
-      ) : (
-        <div className="overflow-x-auto rounded-3xl border border-gray-100 shadow-xl bg-white">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 border-b border-gray-100 italic">
-              <tr>
-                <th className="px-6 py-4 text-xs font-black text-gray-500 uppercase tracking-widest text-left">ID</th>
-                <th className="px-6 py-4 text-xs font-black text-gray-500 uppercase tracking-widest text-left">Name</th>
-                <th className="px-6 py-4 text-xs font-black text-gray-500 uppercase tracking-widest text-left">Price</th>
-                <th className="px-6 py-4 text-xs font-black text-gray-500 uppercase tracking-widest text-left">Category</th>
-                <th className="px-6 py-4 text-xs font-black text-gray-500 uppercase tracking-widest text-left">Brand</th>
-                <th className="px-6 py-4"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {data.products.map((product) => (
-                <tr key={product._id} className="hover:bg-gray-50 transition-colors group">
-                  <td className="px-6 py-4 text-xs font-medium text-gray-400 select-all">{product._id}</td>
-                  <td className="px-6 py-4 text-sm font-bold text-gray-900 line-clamp-1">{product.name}</td>
-                  <td className="px-6 py-4 text-sm font-black text-primary-600">₹{product.price.toLocaleString('en-IN')}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500 font-medium">{product.category}</td>
-                  <td className="px-6 py-4 text-sm text-gray-500 font-medium">{product.brand}</td>
-                  <td className="px-6 py-4 flex items-center justify-end space-x-2">
-                    <Link to={`/admin/product/${product._id}/edit`} className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                      <Edit className="w-5 h-5" />
-                    </Link>
-                    <button
-                      onClick={() => deleteHandler(product._id)}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </td>
+        {isLoading ? (
+          <Loader className="w-full h-96" />
+        ) : error ? (
+          <Message variant="danger">{error?.data?.message || error.error}</Message>
+        ) : (
+          <div className="overflow-x-auto rounded-3xl border border-gray-100 dark:border-gray-750 shadow-xl bg-white dark:bg-gray-800">
+            <table className="w-full text-left">
+              <thead className="bg-gray-50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-750 italic">
+                <tr>
+                  <th className="px-6 py-4 text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest text-left">ID</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest text-left">Name</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest text-left">Price</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest text-left">Category</th>
+                  <th className="px-6 py-4 text-xs font-black text-gray-500 dark:text-gray-400 uppercase tracking-widest text-left">Brand</th>
+                  <th className="px-6 py-4"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+              </thead>
+              <tbody className="divide-y divide-gray-50 dark:divide-gray-750">
+                {data.products.map((product) => (
+                  <tr key={product._id} className="hover:bg-gray-50 dark:hover:bg-gray-750/50 transition-colors group">
+                    <td className="px-6 py-4 text-xs font-medium text-gray-400 dark:text-gray-500 select-all">{product._id}</td>
+                    <td className="px-6 py-4 text-sm font-bold text-gray-900 dark:text-white line-clamp-1">{product.name}</td>
+                    <td className="px-6 py-4 text-sm font-black text-primary-600 dark:text-primary-400">₹{product.price.toLocaleString('en-IN')}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-medium">{product.category}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 font-medium">{product.brand}</td>
+                    <td className="px-6 py-4 flex items-center justify-end space-x-2">
+                      <Link to={`/admin/product/${product._id}/edit`} className="p-2 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/20 rounded-lg transition-all">
+                        <Edit className="w-5 h-5" />
+                      </Link>
+                      <button
+                        onClick={() => deleteHandler(product._id)}
+                        className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-all cursor-pointer"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </FadeIn>
   );
 };
 

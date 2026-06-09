@@ -6,6 +6,7 @@ import Loader from '../../components/Loader';
 import Message from '../../components/Message';
 import { toast } from 'react-toastify';
 import { ChevronLeft } from 'lucide-react';
+import { FadeIn, ShinyButton } from '@hemanath-afk/afk-motion';
 
 const CouponEditScreen = () => {
   const { id: couponId } = useParams();
@@ -47,13 +48,13 @@ const CouponEditScreen = () => {
   };
 
   return (
-    <>
-      <Link to="/admin/coupons" className="inline-flex items-center text-gray-500 hover:text-primary-600 transition-colors mb-4">
+    <FadeIn duration={0.4}>
+      <Link to="/admin/coupons" className="inline-flex items-center text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors mb-4 text-left">
         <ChevronLeft className="w-5 h-5 mr-1" /> Back to Coupons
       </Link>
       
       <FormContainer>
-        <h1 className="text-3xl font-black text-gray-900 mb-8">Edit Coupon</h1>
+        <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-8">Edit Coupon</h1>
         
         {loadingUpdate && <Loader />}
 
@@ -64,7 +65,7 @@ const CouponEditScreen = () => {
         ) : (
           <form onSubmit={submitHandler} className="space-y-6">
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Code</label>
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Code</label>
               <input
                 type="text"
                 placeholder="Enter code"
@@ -76,7 +77,7 @@ const CouponEditScreen = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">Discount Percentage</label>
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Discount Percentage</label>
               <input
                 type="number"
                 placeholder="Enter discount"
@@ -95,20 +96,24 @@ const CouponEditScreen = () => {
                     id="isActive"
                     checked={isActive}
                     onChange={(e) => setIsActive(e.target.checked)}
-                    className="rounded text-primary-600 focus:ring-primary-500 w-4 h-4"
+                    className="rounded text-primary-600 focus:ring-primary-500 w-4 h-4 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700"
                 />
-                <label htmlFor="isActive" className="text-sm font-bold text-gray-700 cursor-pointer">
+                <label htmlFor="isActive" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer">
                     Is Active
                 </label>
             </div>
 
-            <button type="submit" className="w-full btn-primary py-4 font-black">
-              Update Coupon
-            </button>
+            <div className="flex">
+              <ShinyButton type="submit" className="w-full btn-primary py-4 font-black rounded-2xl cursor-pointer">
+                <span className="flex items-center justify-center">
+                  Update Coupon
+                </span>
+              </ShinyButton>
+            </div>
           </form>
         )}
       </FormContainer>
-    </>
+    </FadeIn>
   );
 };
 

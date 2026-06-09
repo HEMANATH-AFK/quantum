@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { useGetProductsQuery } from '../store/slices/productsApiSlice';
 import ProductCard from '../components/ProductCard';
 import ProductSkeleton from '../components/ProductSkeleton';
-import Loader from '../components/Loader';
 import Message from '../components/Message';
 import Paginate from '../components/Paginate';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Filter, ChevronDown, Star, X } from 'lucide-react';
+import { AuroraBackground, WordReveal, FadeUp } from '@hemanath-afk/afk-motion';
 
 const HomeScreen = () => {
   const { keyword, pageNumber } = useParams();
@@ -54,35 +54,41 @@ const HomeScreen = () => {
   const displayRecent = recentProducts?.products.filter(p => recentIds.includes(p._id)) || [];
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 transition-colors duration-300">
       {/* Hero Section */}
       {!keyword && !category && (
-        <section className="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-700 to-primary-600 items-center justify-center flex p-8 text-center">
-              <div className="max-w-2xl text-white">
-                  <h1 className="text-4xl md:text-5xl font-black mb-3">Next-Gen Tech is Here</h1>
-                  <p className="text-primary-100 text-base md:text-lg font-medium opacity-90">Experience premium innovation with our new arrivals.</p>
+        <section className="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-xl z-0">
+          <AuroraBackground className="absolute inset-0 items-center justify-center flex p-8 text-center">
+              <div className="max-w-2xl text-white z-10">
+                  <h1 className="text-4xl md:text-5xl font-black mb-3">
+                    <WordReveal text="Next-Gen Tech is Here" />
+                  </h1>
+                  <p className="text-primary-100 dark:text-primary-200 text-base md:text-lg font-medium opacity-90">
+                    Experience premium innovation with our new arrivals.
+                  </p>
               </div>
-          </div>
+          </AuroraBackground>
         </section>
       )}
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Filters Sidebar */}
         <aside className={`lg:w-64 space-y-8 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-            <div className="card p-6 space-y-6 sticky top-24">
+            <div className="card p-6 space-y-6 sticky top-24 dark:bg-gray-800 dark:border-gray-700">
                 <div className="flex items-center justify-between lg:hidden mb-4">
-                    <h3 className="font-bold">Filters</h3>
-                    <button onClick={() => setShowFilters(false)}><X className="w-5 h-5" /></button>
+                    <h3 className="font-bold text-gray-900 dark:text-white">Filters</h3>
+                    <button onClick={() => setShowFilters(false)} className="text-gray-600 dark:text-gray-400">
+                      <X className="w-5 h-5" />
+                    </button>
                 </div>
 
                 {/* Categories */}
                 <div>
-                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Categories</h4>
+                    <h4 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Categories</h4>
                     <div className="space-y-2">
                         <button 
                             onClick={() => setCategory('')}
-                            className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${category === '' ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-50'}`}
+                            className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${category === '' ? 'bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                         >
                             All Categories
                         </button>
@@ -90,7 +96,7 @@ const HomeScreen = () => {
                             <button 
                                 key={c}
                                 onClick={() => setCategory(c)}
-                                className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${category === c ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-50'}`}
+                                className={`block w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${category === c ? 'bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                             >
                                 {c}
                             </button>
@@ -100,35 +106,35 @@ const HomeScreen = () => {
 
                 {/* Price Range */}
                 <div>
-                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Price Range</h4>
+                    <h4 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Price Range</h4>
                     <div className="flex items-center space-x-2">
                         <input 
                             type="number" 
                             placeholder="Min"
                             value={minPrice}
                             onChange={(e) => setMinPrice(e.target.value)}
-                            className="w-full bg-gray-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary-500"
+                            className="w-full bg-gray-50 dark:bg-gray-900 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none p-2"
                         />
-                        <span className="text-gray-300">-</span>
+                        <span className="text-gray-300 dark:text-gray-600">-</span>
                         <input 
                             type="number" 
                             placeholder="Max"
                             value={maxPrice}
                             onChange={(e) => setMaxPrice(e.target.value)}
-                            className="w-full bg-gray-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary-500"
+                            className="w-full bg-gray-50 dark:bg-gray-900 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary-500 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 outline-none p-2"
                         />
                     </div>
                 </div>
 
                 {/* Ratings */}
                 <div>
-                    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Min Rating</h4>
+                    <h4 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Min Rating</h4>
                     <div className="space-y-2">
                         {[4, 3, 2].map((r) => (
                             <button 
                                 key={r}
                                 onClick={() => setRating(r)}
-                                className={`flex items-center space-x-2 w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${Number(rating) === r ? 'bg-primary-50 text-primary-600' : 'text-gray-600 hover:bg-gray-50'}`}
+                                className={`flex items-center space-x-2 w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${Number(rating) === r ? 'bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                             >
                                 <span className="flex text-yellow-400">
                                     {[...Array(r)].map((_, i) => <Star key={i} className="w-3 h-3 fill-current" />)}
@@ -147,7 +153,7 @@ const HomeScreen = () => {
                         setMaxPrice('');
                         setSort('latest');
                     }}
-                    className="w-full py-2.5 text-xs font-bold text-gray-400 hover:text-red-500 transition-colors border border-dashed border-gray-200 rounded-lg hover:border-red-200"
+                    className="w-full py-2.5 text-xs font-bold text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors border border-dashed border-gray-200 dark:border-gray-750 rounded-lg hover:border-red-200 dark:hover:border-red-900/30"
                 >
                     Clear Filters
                 </button>
@@ -158,11 +164,11 @@ const HomeScreen = () => {
         <div className="flex-1">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
                 <div>
-                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">
+                    <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                         {keyword ? `Results for "${keyword}"` : category ? category : 'Latest Tech'}
                     </h2>
                     {data?.total > 0 && (
-                        <p className="text-sm text-gray-400 font-medium mt-1">Showing {data.products.length} of {data.total} products</p>
+                        <p className="text-sm text-gray-400 dark:text-gray-500 font-medium mt-1">Showing {data.products.length} of {data.total} products</p>
                     )}
                 </div>
 
@@ -178,14 +184,14 @@ const HomeScreen = () => {
                         <select 
                             value={sort}
                             onChange={(e) => setSort(e.target.value)}
-                            className="w-full appearance-none bg-white border border-gray-100 rounded-xl px-4 py-2.5 pr-10 text-sm font-bold text-gray-700 shadow-sm focus:ring-2 focus:ring-primary-500 cursor-pointer"
+                            className="w-full appearance-none bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-750 rounded-xl px-4 py-2.5 pr-10 text-sm font-bold text-gray-700 dark:text-gray-200 shadow-sm focus:ring-2 focus:ring-primary-500 cursor-pointer outline-none"
                         >
                             <option value="latest">Latest Arrivals</option>
                             <option value="price_asc">Price: Low to High</option>
                             <option value="price_desc">Price: High to Low</option>
                             <option value="rating">Top Rated</option>
                         </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
                     </div>
                 </div>
             </div>
@@ -199,11 +205,11 @@ const HomeScreen = () => {
             ) : error ? (
               <Message variant="danger">{error?.data?.message || error.error}</Message>
             ) : data.products.length === 0 ? (
-                <div className="card p-12 text-center text-gray-400 font-medium">
+                <div className="card p-12 text-center text-gray-400 dark:text-gray-500 font-medium dark:bg-gray-800 dark:border-gray-700">
                     No products found matching your criteria.
                 </div>
             ) : (
-              <>
+              <FadeUp duration={0.5}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {data.products.map((product) => (
                     <ProductCard key={product._id} product={product} />
@@ -216,20 +222,22 @@ const HomeScreen = () => {
                         keyword={keyword ? keyword : ''}
                     />
                 </div>
-              </>
+              </FadeUp>
             )}
         </div>
       </div>
 
       {/* Recently Viewed Section */}
       {!keyword && !category && displayRecent.length > 0 && (
-        <section className="pt-12 border-t border-gray-100">
-            <h2 className="text-2xl font-black text-gray-900 mb-8 tracking-tight">Recently Viewed</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                {displayRecent.map((product) => (
-                    <ProductCard key={product._id} product={product} />
-                ))}
-            </div>
+        <section className="pt-12 border-t border-gray-100 dark:border-gray-800">
+            <h2 className="text-2xl font-black text-gray-900 dark:text-white mb-8 tracking-tight">Recently Viewed</h2>
+            <FadeUp duration={0.5}>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                  {displayRecent.map((product) => (
+                      <ProductCard key={product._id} product={product} />
+                  ))}
+              </div>
+            </FadeUp>
         </section>
       )}
     </div>

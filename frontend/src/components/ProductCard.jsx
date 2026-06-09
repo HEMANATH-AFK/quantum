@@ -5,6 +5,7 @@ import { addToCart } from '../store/slices/cartSlice';
 import { addToCompare, removeFromCompare } from '../store/slices/compareSlice';
 import { useAddToWishlistMutation, useRemoveFromWishlistMutation, useGetWishlistQuery } from '../store/slices/usersApiSlice';
 import { toast } from 'react-toastify';
+import { TiltCard } from '@hemanath-afk/afk-motion';
 
 const ProductCard = ({ product }) => {
   const dispatch = useDispatch();
@@ -60,76 +61,78 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="card h-full flex flex-col group">
-      <Link to={`/product/${product._id}`} className="block relative overflow-hidden">
-        <div className="w-full aspect-[4/3] overflow-hidden bg-gray-50">
-            <img
-              src={product.image}
-              alt={product.name}
-              className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
-            />
-        </div>
-        <button 
-          onClick={toggleWishlist}
-          className={`absolute top-2 left-2 p-2 rounded-full shadow-md transition-all ${isInWishlist ? 'bg-primary-600 text-white' : 'bg-white/80 text-gray-600 hover:bg-white hover:text-primary-600'}`}
-        >
-          <Heart className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`} />
-        </button>
-        {product.countInStock === 0 && (
-          <div className="absolute top-2 right-2 bg-red-100 text-red-600 text-[10px] font-bold px-2 py-1 rounded">
-            SOLD OUT
+    <TiltCard className="h-full">
+      <div className="card h-full flex flex-col group dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300">
+        <Link to={`/product/${product._id}`} className="block relative overflow-hidden">
+          <div className="w-full aspect-[4/3] overflow-hidden bg-gray-50 dark:bg-gray-900">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
+              />
           </div>
-        )}
-        {product.countInStock > 0 && product.countInStock <= 5 && (
-          <div className="absolute top-2 right-2 bg-orange-100 text-orange-600 text-[10px] font-bold px-2 py-1 rounded flex items-center">
-            <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-1 animate-pulse"></span>
-            LOW STOCK
-          </div>
-        )}
-      </Link>
-
-      <div className="p-4 flex-grow flex flex-col">
-        <div className="text-xs text-gray-400 font-medium mb-1 uppercase tracking-wider">{product.brand}</div>
-        <Link to={`/product/${product._id}`}>
-          <h3 className="text-gray-900 font-bold mb-2 group-hover:text-primary-600 transition-colors line-clamp-1">
-            {product.name}
-          </h3>
+          <button 
+            onClick={toggleWishlist}
+            className={`absolute top-2 left-2 p-2 rounded-full shadow-md transition-all ${isInWishlist ? 'bg-primary-600 dark:bg-primary-500 text-white' : 'bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-750 hover:text-primary-600 dark:hover:text-primary-400'}`}
+          >
+            <Heart className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`} />
+          </button>
+          {product.countInStock === 0 && (
+            <div className="absolute top-2 right-2 bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 text-[10px] font-bold px-2 py-1 rounded">
+              SOLD OUT
+            </div>
+          )}
+          {product.countInStock > 0 && product.countInStock <= 5 && (
+            <div className="absolute top-2 right-2 bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 text-[10px] font-bold px-2 py-1 rounded flex items-center">
+              <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-1 animate-pulse"></span>
+              LOW STOCK
+            </div>
+          )}
         </Link>
 
-        <div className="flex items-center space-x-1 mb-4">
-          <div className="flex text-yellow-400">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-current' : 'text-gray-200'}`}
-              />
-            ))}
-          </div>
-          <span className="text-xs text-gray-400">({product.numReviews})</span>
-        </div>
+        <div className="p-4 flex-grow flex flex-col">
+          <div className="text-xs text-gray-400 dark:text-gray-500 font-medium mb-1 uppercase tracking-wider">{product.brand}</div>
+          <Link to={`/product/${product._id}`}>
+            <h3 className="text-gray-900 dark:text-white font-bold mb-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-1">
+              {product.name}
+            </h3>
+          </Link>
 
-        <div className="mt-auto flex items-center justify-between">
-          <span className="text-xl font-black text-gray-900">₹{product.price.toLocaleString('en-IN')}</span>
-          <div className="flex space-x-2">
-            <button
-                onClick={handleToggleCompare}
-                className={`p-2 rounded-lg transition-all transform active:scale-95 ${isInCompare ? 'bg-primary-100 text-primary-600' : 'bg-gray-50 text-gray-400 hover:bg-primary-50 hover:text-primary-600'}`}
-                title="Compare"
-            >
-                <GitCompare className="w-5 h-5" />
-            </button>
-            <button
-                onClick={handleAddToCart}
-                disabled={product.countInStock === 0}
-                className="p-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-primary-600 hover:text-white transition-all transform active:scale-95 disabled:opacity-30 disabled:hover:bg-gray-50 disabled:hover:text-gray-600"
-                title="Add to Cart"
-            >
-                <ShoppingCart className="w-5 h-5" />
-            </button>
+          <div className="flex items-center space-x-1 mb-4">
+            <div className="flex text-yellow-400">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-current' : 'text-gray-200 dark:text-gray-750'}`}
+                />
+              ))}
+            </div>
+            <span className="text-xs text-gray-400 dark:text-gray-500">({product.numReviews})</span>
+          </div>
+
+          <div className="mt-auto flex items-center justify-between">
+            <span className="text-xl font-black text-gray-900 dark:text-white">₹{product.price.toLocaleString('en-IN')}</span>
+            <div className="flex space-x-2">
+              <button
+                  onClick={handleToggleCompare}
+                  className={`p-2 rounded-lg transition-all transform active:scale-95 ${isInCompare ? 'bg-primary-100 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:bg-primary-50 dark:hover:bg-primary-950/30 hover:text-primary-600 dark:hover:text-primary-400'}`}
+                  title="Compare"
+              >
+                  <GitCompare className="w-5 h-5" />
+              </button>
+              <button
+                  onClick={handleAddToCart}
+                  disabled={product.countInStock === 0}
+                  className="p-2 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-primary-600 dark:hover:bg-primary-500 hover:text-white dark:hover:text-white transition-all transform active:scale-95 disabled:opacity-30 disabled:hover:bg-gray-50 dark:disabled:hover:bg-gray-800 disabled:hover:text-gray-600 dark:disabled:hover:text-gray-300"
+                  title="Add to Cart"
+              >
+                  <ShoppingCart className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </TiltCard>
   );
 };
 

@@ -5,7 +5,7 @@ import { useLoginMutation } from '../store/slices/usersApiSlice';
 import { setCredentials } from '../store/slices/authSlice';
 import { toast } from 'react-toastify';
 import FormContainer from '../components/FormContainer';
-import Loader from '../components/Loader';
+import { FadeIn, ShinyButton } from '@hemanath-afk/afk-motion';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -41,46 +41,54 @@ const LoginScreen = () => {
 
   return (
     <FormContainer>
-      <h1 className="text-3xl font-black text-gray-900 mb-8">Sign In</h1>
+      <FadeIn duration={0.4}>
+        <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-8">Sign In</h1>
 
-      <form onSubmit={submitHandler} className="space-y-6">
-        <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="input-field"
-            placeholder="name@example.com"
-          />
+        <form onSubmit={submitHandler} className="space-y-6">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="input-field p-2"
+              placeholder="name@example.com"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="input-field p-2"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <div className="flex">
+            <ShinyButton
+              disabled={isLoading}
+              type="submit"
+              className="w-full btn-primary py-3 font-black rounded-2xl cursor-pointer"
+            >
+              <span className="flex items-center justify-center">
+                {isLoading ? 'Signing In...' : 'Sign In'}
+              </span>
+            </ShinyButton>
+          </div>
+        </form>
+
+        <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+          New Customer?{' '}
+          <Link to={redirect ? `/register?redirect=${redirect}` : '/register'} className="text-primary-600 dark:text-primary-400 font-bold hover:underline">
+            Create Account
+          </Link>
         </div>
-
-        <div>
-          <label className="block text-sm font-bold text-gray-700 mb-2">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="input-field"
-            placeholder="••••••••"
-          />
-        </div>
-
-        <button
-          disabled={isLoading}
-          type="submit"
-          className="w-full btn-primary py-3 font-black"
-        >
-          {isLoading ? 'Signing In...' : 'Sign In'}
-        </button>
-      </form>
-
-      <div className="mt-8 text-center text-sm text-gray-500">
-        New Customer?{' '}
-        <Link to={redirect ? `/register?redirect=${redirect}` : '/register'} className="text-primary-600 font-bold hover:underline">
-          Create Account
-        </Link>
-      </div>
+      </FadeIn>
     </FormContainer>
   );
 };
