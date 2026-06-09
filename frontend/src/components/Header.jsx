@@ -1,10 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, LogOut, Menu, X, Search, Heart, Moon, Sun } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Menu, X, Heart, Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
 import { logout } from '../store/slices/authSlice';
 import SearchBox from './SearchBox';
 import { useTheme } from './ThemeProvider';
+import { FadeIn, SlideDown, HoverScale } from '@hemanath-afk/afk-motion';
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -20,14 +21,18 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
+    <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 transition-colors duration-300">
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-xl italic">Q</span>
-          </div>
-          <span className="text-xl font-extrabold tracking-tight text-gray-900">Quantum<span className="text-primary-600">Cart</span></span>
+          <HoverScale>
+            <div className="w-8 h-8 bg-primary-600 dark:bg-primary-500 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl italic">Q</span>
+            </div>
+          </HoverScale>
+          <span className="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+            Quantum<span className="text-primary-600 dark:text-primary-400">Cart</span>
+          </span>
         </Link>
 
         {/* Desktop Search */}
@@ -37,42 +42,54 @@ const Header = () => {
 
         {/* Right Nav */}
         <div className="flex items-center space-x-6">
-          <button onClick={toggleTheme} className="text-gray-600 hover:text-primary-600 transition-colors">
-            {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+          <button 
+            onClick={toggleTheme} 
+            className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+            title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
 
-          <Link to="/wishlist" className="relative text-gray-600 hover:text-primary-600 transition-colors">
-            <Heart className="w-6 h-6" />
+          <Link 
+            to="/wishlist" 
+            className="relative text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+            title="Wishlist"
+          >
+            <Heart className="w-5 h-5" />
           </Link>
 
-          <Link to="/cart" className="relative text-gray-600 hover:text-primary-600 transition-colors">
-            <ShoppingCart className="w-6 h-6" />
+          <Link 
+            to="/cart" 
+            className="relative text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+            title="Cart"
+          >
+            <ShoppingCart className="w-5 h-5" />
             {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white">
+              <span className="absolute top-0 right-0 bg-primary-600 dark:bg-primary-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white dark:ring-gray-900 transform translate-x-1/3 -translate-y-1/3">
                 {cartItems.reduce((a, c) => a + c.qty, 0)}
               </span>
             )}
           </Link>
 
           {userInfo ? (
-            <div className="relative group flex items-center space-x-1 cursor-pointer">
-              <span className="text-sm font-medium text-gray-700">{userInfo.name}</span>
-              <User className="w-5 h-5 text-gray-600" />
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2">
-                <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Profile</Link>
-                <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Orders</Link>
+            <div className="relative group flex items-center space-x-1 cursor-pointer py-2">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{userInfo.name}</span>
+              <User className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
+                <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">Profile</Link>
+                <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">Orders</Link>
                 {userInfo.isAdmin && (
                   <>
-                    <hr className="my-1 border-gray-100" />
-                    <Link to="/admin/dashboard" className="block px-4 py-2 text-sm text-primary-600 font-black hover:bg-gray-50">Dashboard</Link>
-                    <Link to="/admin/productlist" className="block px-4 py-2 text-sm text-primary-600 font-medium hover:bg-gray-50">Products</Link>
-                    <Link to="/admin/userlist" className="block px-4 py-2 text-sm text-primary-600 font-medium hover:bg-gray-50">Users</Link>
-                    <Link to="/admin/orderlist" className="block px-4 py-2 text-sm text-primary-600 font-medium hover:bg-gray-50">Orders</Link>
-                    <Link to="/admin/coupons" className="block px-4 py-2 text-sm text-primary-600 font-medium hover:bg-gray-50">Coupons</Link>
+                    <hr className="my-1 border-gray-100 dark:border-gray-700" />
+                    <Link to="/admin/dashboard" className="block px-4 py-2 text-sm text-primary-600 dark:text-primary-400 font-black hover:bg-gray-50 dark:hover:bg-gray-750">Dashboard</Link>
+                    <Link to="/admin/productlist" className="block px-4 py-2 text-sm text-primary-600 dark:text-primary-400 font-medium hover:bg-gray-50 dark:hover:bg-gray-750">Products</Link>
+                    <Link to="/admin/userlist" className="block px-4 py-2 text-sm text-primary-600 dark:text-primary-400 font-medium hover:bg-gray-50 dark:hover:bg-gray-750">Users</Link>
+                    <Link to="/admin/orderlist" className="block px-4 py-2 text-sm text-primary-600 dark:text-primary-400 font-medium hover:bg-gray-50 dark:hover:bg-gray-750">Orders</Link>
+                    <Link to="/admin/coupons" className="block px-4 py-2 text-sm text-primary-600 dark:text-primary-400 font-medium hover:bg-gray-50 dark:hover:bg-gray-750">Coupons</Link>
                   </>
                 )}
-                <hr className="my-1 border-gray-100" />
-                <button onClick={logoutHandler} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center">
+                <hr className="my-1 border-gray-100 dark:border-gray-700" />
+                <button onClick={logoutHandler} className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 flex items-center">
                   <LogOut className="w-4 h-4 mr-2" />
                   Sign Out
                 </button>
@@ -83,7 +100,7 @@ const Header = () => {
           )}
 
           {/* Mobile menu toggle */}
-          <button className="md:hidden text-gray-600" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button className="md:hidden text-gray-600 dark:text-gray-300" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -91,13 +108,16 @@ const Header = () => {
 
       {/* Mobile nav */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-100 p-4 space-y-4 text-left">
-          <SearchBox />
-          <div className="flex flex-col space-y-2">
-            <Link to="/" className="text-gray-600 py-2 font-medium" onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link to="/categories" className="text-gray-600 py-2 font-medium" onClick={() => setIsMenuOpen(false)}>Categories</Link>
+        <SlideDown duration={0.3}>
+          <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 p-4 space-y-4 text-left shadow-lg">
+            <SearchBox />
+            <div className="flex flex-col space-y-2">
+              <Link to="/" className="text-gray-600 dark:text-gray-300 py-2 font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
+              <Link to="/wishlist" className="text-gray-600 dark:text-gray-300 py-2 font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors" onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
+              <Link to="/cart" className="text-gray-600 dark:text-gray-300 py-2 font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors" onClick={() => setIsMenuOpen(false)}>Cart</Link>
+            </div>
           </div>
-        </div>
+        </SlideDown>
       )}
     </header>
   );

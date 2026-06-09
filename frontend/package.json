@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hemanath-afk/afk-motion": "^2.0.0",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.6",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.40.0",
     "html-to-image": "^1.11.13",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.0",
