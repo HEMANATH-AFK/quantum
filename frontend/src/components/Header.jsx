@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingCart, User, LogOut, Menu, X, Heart, Moon, Sun } from 'lucide-react';
-import { useState } from 'react';
+import { ShoppingCart, User, LogOut, Menu, X, Heart, Moon, Sun, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { logout } from '../store/slices/authSlice';
 import SearchBox from './SearchBox';
 import { useTheme } from './ThemeProvider';
@@ -23,6 +23,29 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [currentAnn, setCurrentAnn] = useState(0);
+  const announcements = [
+    "⚡ Quantum Drop: Save 10% on your first order. Use code: WELCOME10",
+    "🚚 Premium perk: Free express delivery for orders above ₹5,000",
+    "🔒 Safe & Secure checkout with 256-bit encryption"
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentAnn((prev) => (prev + 1) % announcements.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [announcements.length]);
+
+  const prevAnn = (e) => {
+    e.preventDefault();
+    setCurrentAnn((prev) => (prev - 1 + announcements.length) % announcements.length);
+  };
+  const nextAnn = (e) => {
+    e.preventDefault();
+    setCurrentAnn((prev) => (prev + 1) % announcements.length);
+  };
+
   const logoutHandler = () => {
     dispatch(logout());
     navigate('/login');
@@ -30,6 +53,19 @@ const Header = () => {
 
   return (
     <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 transition-colors duration-300">
+      {/* Announcement Bar */}
+      <div className="bg-gradient-to-r from-[#0f0c29] via-[#1e1b4b] to-[#0f0c29] text-white py-2 px-4 text-center text-[10px] md:text-xs font-black flex items-center justify-between border-b border-white/5 tracking-wider">
+        <button onClick={prevAnn} className="hover:text-primary-400 p-1 transition-colors outline-none cursor-pointer">
+          <ChevronLeft className="w-3.5 h-3.5" />
+        </button>
+        <span className="inline-flex items-center gap-2 select-none text-center">
+          {announcements[currentAnn]}
+        </span>
+        <button onClick={nextAnn} className="hover:text-primary-400 p-1 transition-colors outline-none cursor-pointer">
+          <ChevronRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
       {/* Main Nav Row */}
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}

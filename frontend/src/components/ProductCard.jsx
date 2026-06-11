@@ -1,8 +1,9 @@
 import { useNavigate, Link } from 'react-router-dom';
-import { Star, ShoppingCart, Heart, GitCompare } from 'lucide-react';
+import { Star, ShoppingCart, Heart, GitCompare, Eye } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../store/slices/cartSlice';
 import { addToCompare, removeFromCompare } from '../store/slices/compareSlice';
+import { openQuickView } from '../store/slices/quickViewSlice';
 import { useAddToWishlistMutation, useRemoveFromWishlistMutation, useGetWishlistQuery } from '../store/slices/usersApiSlice';
 import { toast } from 'react-toastify';
 import { TiltCard } from '@hemanath-afk/afk-motion';
@@ -63,7 +64,7 @@ const ProductCard = ({ product }) => {
   return (
     <TiltCard className="h-full">
       <div className="card h-full flex flex-col group dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300">
-        <Link to={`/product/${product._id}`} className="block relative overflow-hidden">
+        <Link to={`/product/${product._id}`} className="block relative overflow-hidden group/img">
           <div className="w-full aspect-square overflow-hidden bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
               <img
                 src={product.image}
@@ -71,19 +72,32 @@ const ProductCard = ({ product }) => {
                 className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-500 ease-in-out"
               />
           </div>
+          {/* Quick View Hover Overlay */}
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-300 flex items-center justify-center z-10">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dispatch(openQuickView(product));
+              }}
+              className="bg-white/95 dark:bg-gray-900/95 text-gray-900 dark:text-white font-extrabold px-4 py-2.5 rounded-xl flex items-center gap-2 hover:scale-105 active:scale-95 transition-all shadow-xl text-xs cursor-pointer border border-gray-150/10"
+            >
+              <Eye className="w-4 h-4" /> Quick View
+            </button>
+          </div>
           <button 
             onClick={toggleWishlist}
-            className={`absolute top-3 left-3 p-2 rounded-full shadow-md transition-all ${isInWishlist ? 'bg-primary-600 dark:bg-primary-500 text-white' : 'bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-750 hover:text-primary-600 dark:hover:text-primary-400'}`}
+            className={`absolute top-3 left-3 p-2 rounded-full shadow-md transition-all z-20 ${isInWishlist ? 'bg-primary-600 dark:bg-primary-500 text-white' : 'bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-750 hover:text-primary-600 dark:hover:text-primary-400'}`}
           >
             <Heart className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`} />
           </button>
           {product.countInStock === 0 && (
-            <div className="absolute top-3 right-3 bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 text-[10px] font-bold px-2 py-1 rounded">
+            <div className="absolute top-3 right-3 bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 text-[10px] font-bold px-2 py-1 rounded z-20">
               SOLD OUT
             </div>
           )}
           {product.countInStock > 0 && product.countInStock <= 5 && (
-            <div className="absolute top-3 right-3 bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 text-[10px] font-bold px-2 py-1 rounded flex items-center">
+            <div className="absolute top-3 right-3 bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 text-[10px] font-bold px-2 py-1 rounded flex items-center z-20">
               <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-1 animate-pulse"></span>
               LOW STOCK
             </div>

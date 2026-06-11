@@ -3,6 +3,7 @@ import { apiSlice } from './slices/apiSlice';
 import cartSliceReducer from './slices/cartSlice';
 import authSliceReducer from './slices/authSlice';
 import compareSliceReducer from './slices/compareSlice';
+import quickViewSliceReducer from './slices/quickViewSlice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     cart: cartSliceReducer,
     auth: authSliceReducer,
     compare: compareSliceReducer,
+    quickView: quickViewSliceReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware),

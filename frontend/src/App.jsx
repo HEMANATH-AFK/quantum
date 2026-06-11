@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CompareDrawer from './components/CompareDrawer.jsx';
+import QuickViewModal from './components/QuickViewModal.jsx';
 import HomeScreen from './pages/HomeScreen';
 import ProductDetailsScreen from './pages/ProductDetailsScreen.jsx';
 import CartScreen from './pages/CartScreen.jsx';
@@ -88,6 +89,7 @@ const App = () => {
           </Routes>
         </main>
         <CompareDrawer />
+        <QuickViewModal />
         <Footer />
         <ToastContainer position="bottom-right" autoClose={3000} />
       </div>
