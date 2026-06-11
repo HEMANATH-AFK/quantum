@@ -6,7 +6,8 @@ import Message from '../components/Message';
 import Paginate from '../components/Paginate';
 import { useParams } from 'react-router-dom';
 import { Filter, ChevronDown, Star, X } from 'lucide-react';
-import { AuroraBackground, WordReveal, FadeUp } from '@hemanath-afk/afk-motion';
+import { FadeUp } from '@hemanath-afk/afk-motion';
+
 
 const HomeScreen = () => {
   const { keyword, pageNumber } = useParams();
@@ -55,21 +56,58 @@ const HomeScreen = () => {
 
   return (
     <div className="space-y-12 transition-colors duration-300">
-      {/* Hero Section */}
       {!keyword && !category && (
-        <section className="relative h-64 md:h-80 rounded-3xl overflow-hidden shadow-xl z-0">
-          <AuroraBackground className="absolute inset-0 items-center justify-center flex p-8 text-center">
-              <div className="max-w-2xl text-white z-10">
-                  <h1 className="text-4xl md:text-5xl font-black mb-3">
-                    <WordReveal text="Next-Gen Tech is Here" />
-                  </h1>
-                  <p className="text-primary-100 dark:text-primary-200 text-base md:text-lg font-medium opacity-90">
-                    Experience premium innovation with our new arrivals.
-                  </p>
-              </div>
-          </AuroraBackground>
+        <section className="relative rounded-3xl overflow-hidden shadow-2xl mb-2">
+          {/* Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0f0c29] via-[#302b63] to-[#24243e]" />
+          {/* Animated blobs */}
+          <div className="absolute top-0 left-1/4 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" style={{ animationDelay: '2s' }} />
+
+          {/* Content */}
+          <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-16 md:py-24">
+            <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs font-bold px-4 py-1.5 rounded-full mb-6 tracking-widest uppercase">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              New Arrivals Just Dropped
+            </span>
+
+            <h1 className="text-4xl md:text-6xl font-black text-white mb-4 tracking-tight leading-tight">
+              Next-Gen Tech<br />
+              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                is Here
+              </span>
+            </h1>
+
+            <p className="text-white/70 text-base md:text-lg max-w-xl mb-8 font-medium">
+              Discover premium gadgets, exclusive deals & the latest innovations — all in one place.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+              <a href="/shop" className="inline-flex items-center gap-2 bg-white text-gray-900 font-black px-6 py-3 rounded-2xl hover:scale-105 transition-transform shadow-lg text-sm">
+                🛍️ Shop Now
+              </a>
+              <a href="/new-arrivals" className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-bold px-6 py-3 rounded-2xl hover:bg-white/20 transition-all text-sm">
+                ✨ New Arrivals
+              </a>
+            </div>
+
+            {/* Category Quick Links */}
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {['Earbuds', 'Keyboard', 'Mouse', 'Monitor', 'Smartwatch', 'Camera'].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setCategory(cat)}
+                  className="text-white/80 hover:text-white bg-white/10 hover:bg-white/20 border border-white/10 text-xs font-semibold px-3 py-1.5 rounded-full transition-all"
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
       )}
+
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Filters Sidebar */}

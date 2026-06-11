@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const Footer = () => {
   return (
     <footer className="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 py-12 mt-auto transition-colors duration-300">
@@ -17,18 +19,20 @@ const Footer = () => {
         <div>
           <h4 className="font-bold text-gray-900 dark:text-white mb-4">Shop</h4>
           <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <li><a href="#" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">All Products</a></li>
-            <li><a href="#" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Categories</a></li>
-            <li><a href="#" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">New Arrivals</a></li>
+            <li><Link to="/shop" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Shop</Link></li>
+            <li><Link to="/products" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">All Products</Link></li>
+            <li><Link to="/categories" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Categories</Link></li>
+            <li><Link to="/new-arrivals" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">New Arrivals</Link></li>
           </ul>
         </div>
 
         <div>
-           <h4 className="font-bold text-gray-900 dark:text-white mb-4">Support</h4>
+          <h4 className="font-bold text-gray-900 dark:text-white mb-4">Support</h4>
           <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <li><a href="#" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Help Center</a></li>
-            <li><a href="#" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Shipping</a></li>
-            <li><a href="#" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Returns</a></li>
+            <li><Link to="/support" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Support</Link></li>
+            <li><Link to="/help" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Help Center</Link></li>
+            <li><Link to="/shipping-info" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Shipping</Link></li>
+            <li><Link to="/returns" className="hover:text-primary-600 dark:hover:text-primary-400 transition-colors">Returns</Link></li>
           </ul>
         </div>
 

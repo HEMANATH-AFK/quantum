@@ -17,10 +17,9 @@ const data = {
   ],
   products: [
     {
-      // _id: '1',
       name: 'Nothing Ear 2',
       slug: 'nothing-ear-2',
-      image: '/images/Nothing-ear-2.jpg',
+      image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&q=80',
       category: 'Earbuds',
       price: 11999,
       brand: 'Nothing',
@@ -30,10 +29,9 @@ const data = {
       description: 'High-quality earbuds with ANC and crystal-clear sound.'
     },
     {
-      // _id: '2',
       name: 'boAt Airdopes 141',
       slug: 'boat-airdopes-141',
-      image: '/images/boat-airdopes-141.jpg',
+      image: 'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=600&q=80',
       category: 'Earbuds',
       price: 1299,
       brand: 'boAt',
@@ -43,10 +41,9 @@ const data = {
       description: 'Affordable true wireless earbuds with long battery life.'
     },
     {
-      // _id: '3',
       name: 'Sony WF-1000XM5',
       slug: 'sony-wf-1000xm5',
-      image: '/images/sony-wf-1000xm5.jpg',
+      image: 'https://images.unsplash.com/photo-1631176093617-c5cde2e53a87?w=600&q=80',
       category: 'Earbuds',
       price: 24990,
       brand: 'Sony',
@@ -56,10 +53,9 @@ const data = {
       description: 'Top-tier ANC earbuds with immersive audio experience.'
     },
     {
-      // _id: '4',
       name: 'Redragon K617 Fizz',
       slug: 'redragon-k617-fizz',
-      image: '/images/redragon-k617.jpg',
+      image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&q=80',
       category: 'Keyboard',
       price: 2200,
       brand: 'Redragon',
@@ -69,10 +65,9 @@ const data = {
       description: 'Compact mechanical keyboard with vibrant RGB lighting.'
     },
     {
-      // _id: '5',
       name: 'Logitech MX Master 3S',
       slug: 'logitech-mx-master-3s',
-      image: '/images/logitech-mx-master-3s.jpg',
+      image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&q=80',
       category: 'Mouse',
       price: 9900,
       brand: 'Logitech',
@@ -82,10 +77,9 @@ const data = {
       description: 'Premium wireless mouse for professionals and creatives.'
     },
     {
-      // _id: '6',
       name: 'LG UltraGear 24" 144Hz',
       slug: 'lg-ultragear-24-144hz',
-      image: '/images/lg-ultragear-24.jpg',
+      image: 'https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=600&q=80',
       category: 'Monitor',
       price: 11999,
       brand: 'LG',
@@ -95,10 +89,9 @@ const data = {
       description: 'Smooth gaming monitor with high refresh rate and vibrant colors.'
     },
     {
-      // _id: '7',
       name: 'Samsung Galaxy Watch 6',
       slug: 'samsung-galaxy-watch-6',
-      image: '/images/galaxy-watch-6.jpg',
+      image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80',
       category: 'Smartwatch',
       price: 26999,
       brand: 'Samsung',
@@ -108,10 +101,9 @@ const data = {
       description: 'Stylish smartwatch with advanced health tracking features.'
     },
     {
-      // _id: '8',
       name: 'Noise ColorFit Icon 3',
       slug: 'noise-colorfit-icon-3',
-      image: '/images/noise-icon-3.jpg',
+      image: 'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=600&q=80',
       category: 'Smartwatch',
       price: 1499,
       brand: 'Noise',
@@ -121,10 +113,9 @@ const data = {
       description: 'Budget-friendly smartwatch with essential fitness tracking.'
     },
     {
-      // _id: '9',
       name: 'Mi Power Bank 3i 20000mAh',
       slug: 'mi-power-bank-3i-20000mah',
-      image: '/images/mi-powerbank-4i.jpg',
+      image: 'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=600&q=80',
       category: 'Powerbank',
       price: 1799,
       brand: 'Mi',
@@ -134,10 +125,9 @@ const data = {
       description: 'Reliable high-capacity power bank with dual USB output.'
     },
     {
-      // _id: '10',
       name: 'GoPro Hero 12',
       slug: 'gopro-hero-12',
-      image: '/images/gopro-hero-12.jpg',
+      image: 'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&q=80',
       category: 'Camera',
       price: 45000,
       brand: 'GoPro',
@@ -147,10 +137,9 @@ const data = {
       description: 'High-end action camera for professional video capture.'
     },
     {
-      // _id: '11',
       name: 'Razer Huntsman Mini',
       slug: 'razer-huntsman-mini',
-      image: '/images/razer-huntsman-mini.jpg',
+      image: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600&q=80',
       category: 'Keyboard',
       price: 10500,
       brand: 'Razer',
@@ -160,10 +149,9 @@ const data = {
       description: 'Compact 60% mechanical keyboard with Razer Optical Switches.'
     },
     {
-      // _id: '12',
       name: 'Apple AirPods Pro 2',
       slug: 'apple-airpods-pro-2',
-      image: '/images/airpods-pro-2.jpg',
+      image: 'https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=600&q=80',
       category: 'Earbuds',
       price: 24900,
       brand: 'Apple',
@@ -173,10 +161,9 @@ const data = {
       description: 'Premium earbuds with adaptive ANC and spatial audio.'
     },
     {
-      // _id: '13',
       name: 'Anker Nano II 65W',
       slug: 'anker-nano-ii-65w',
-      image: '/images/anker-nano-ii.jpg',
+      image: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&q=80',
       category: 'Charger',
       price: 4500,
       brand: 'Anker',
@@ -186,10 +173,9 @@ const data = {
       description: 'Fast charger with GaN technology and universal compatibility.'
     },
     {
-      // _id: '14',
       name: 'Zebronics Keyboard',
       slug: 'zebronics-transformer-keyboard',
-      image: '/images/zebronics-transformer.jpg',
+      image: 'https://images.unsplash.com/photo-1595225476474-87563907ef1a?w=600&q=80',
       category: 'Keyboard',
       price: 1199,
       brand: 'Zebronics',
@@ -199,10 +185,9 @@ const data = {
       description: 'Stylish wired gaming keyboard with multicolor LED backlight.'
     },
     {
-      // _id: '15',
       name: 'Realme Buds T300',
       slug: 'realme-buds-t300',
-      image: '/images/realme-buds-t300.jpg',
+      image: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&q=80',
       category: 'Earbuds',
       price: 2299,
       brand: 'Realme',
@@ -212,10 +197,9 @@ const data = {
       description: 'True wireless earbuds with deep bass and ENC calling.'
     },
     {
-      // _id: '16',
       name: 'Samsung M5 Smart Monitor',
       slug: 'samsung-m5-smart-monitor',
-      image: '/images/samsung-m5-monitor.jpg',
+      image: 'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600&q=80',
       category: 'Monitor',
       price: 18999,
       brand: 'Samsung',
@@ -225,10 +209,9 @@ const data = {
       description: 'Smart monitor with built-in apps, Wi-Fi, and FHD display.'
     },
     {
-      // _id: '17',
       name: 'DJI Osmo Mobile 6',
       slug: 'dji-osmo-mobile-6',
-      image: '/images/dji-osmo-6.jpg',
+      image: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&q=80',
       category: 'Camera',
       price: 13000,
       brand: 'DJI',
@@ -238,10 +221,9 @@ const data = {
       description: 'Handheld smartphone gimbal for smooth cinematic video.'
     },
     {
-      // _id: '18',
       name: 'Logitech C920 Webcam',
       slug: 'logitech-c920-webcam',
-      image: '/images/logitech-c920.jpg',
+      image: 'https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=600&q=80',
       category: 'Camera',
       price: 6500,
       brand: 'Logitech',
@@ -251,10 +233,9 @@ const data = {
       description: 'HD webcam with stereo audio and auto light correction.'
     },
     {
-      // _id: '19',
       name: 'Apple Watch SE',
       slug: 'apple-watch-se',
-      image: '/images/apple-watch-se.jpg',
+      image: 'https://images.unsplash.com/photo-1551816230-ef5deaed4a26?w=600&q=80',
       category: 'Smartwatch',
       price: 29900,
       brand: 'Apple',
@@ -264,10 +245,9 @@ const data = {
       description: 'Affordable Apple smartwatch with essential health features.'
     },
     {
-      // _id: '20',
       name: 'boAt Xtend Plus',
       slug: 'boat-xtend-plus',
-      image: '/images/boat-xtend-plus.jpg',
+      image: 'https://images.unsplash.com/photo-1544117519-31a4b719223d?w=600&q=80',
       category: 'Smartwatch',
       price: 2999,
       brand: 'boAt',
@@ -277,10 +257,9 @@ const data = {
       description: 'Feature-rich smartwatch with AMOLED display and BT calling.'
     },
     {
-      // _id: '21',
       name: 'Logitech MX Mechanical',
       slug: 'logitech-mx-mechanical',
-      image: '/images/logitech-mx-mechanical.jpg',
+      image: 'https://images.unsplash.com/photo-1613141413600-c38a2b2e8b1a?w=600&q=80',
       category: 'Keyboard',
       price: 13500,
       brand: 'Logitech',
@@ -290,10 +269,9 @@ const data = {
       description: 'Premium mechanical keyboard with low-profile tactile keys.'
     },
     {
-      // _id: '22',
       name: 'boAt Dual Port Car Charger',
       slug: 'boat-dual-port-car-charger',
-      image: '/images/boat-car-charger.jpg',
+      image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=600&q=80',
       category: 'Charger',
       price: 699,
       brand: 'boAt',
@@ -303,10 +281,9 @@ const data = {
       description: 'Compact dual-port charger for fast charging on the go.'
     },
     {
-      // _id: '23',
       name: 'Sony Alpha ZV-E10 Camera',
       slug: 'sony-alpha-zv-e10-camera',
-      image: '/images/sony-zv-e10.jpg',
+      image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=600&q=80',
       category: 'Camera',
       price: 58000,
       brand: 'Sony',
@@ -316,10 +293,9 @@ const data = {
       description: 'Mirrorless camera perfect for vlogging and content creators.'
     },
     {
-      // _id: '24',
       name: 'HyperX Pulsefire Mouse',
       slug: 'hyperx-pulsefire-haste-mouse',
-      image: '/images/hyperx-haste.jpg',
+      image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&q=80',
       category: 'Mouse',
       price: 3299,
       brand: 'HyperX',
@@ -329,10 +305,9 @@ const data = {
       description: 'Ultra-light gaming mouse with customizable DPI and RGB.'
     },
     {
-      // _id: '25',
       name: 'Amazfit GTS 4 Smartwatch',
       slug: 'amazfit-gts-4-smartwatch',
-      image: '/images/amazfit-gts-4.jpg',
+      image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&q=80',
       category: 'Smartwatch',
       price: 16999,
       brand: 'Amazfit',

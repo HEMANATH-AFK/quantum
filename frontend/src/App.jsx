@@ -28,6 +28,15 @@ import CouponListScreen from './pages/admin/CouponListScreen.jsx';
 import CouponEditScreen from './pages/admin/CouponEditScreen.jsx';
 import DashboardScreen from './pages/admin/DashboardScreen.jsx';
 
+// New pages
+import ShopScreen from './pages/ShopScreen.jsx';
+import CategoriesScreen from './pages/CategoriesScreen.jsx';
+import NewArrivalsScreen from './pages/NewArrivalsScreen.jsx';
+import SupportScreen from './pages/SupportScreen.jsx';
+import HelpCenterScreen from './pages/HelpCenterScreen.jsx';
+import ShippingInfoScreen from './pages/ShippingInfoScreen.jsx';
+import ReturnsScreen from './pages/ReturnsScreen.jsx';
+
 const App = () => {
   return (
     <Router>
@@ -44,6 +53,17 @@ const App = () => {
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/wishlist" element={<WishlistScreen />} />
+
+            {/* Shop & Info Pages */}
+            <Route path="/shop" element={<ShopScreen />} />
+            <Route path="/products" element={<HomeScreen />} />
+            <Route path="/categories" element={<CategoriesScreen />} />
+            <Route path="/new-arrivals" element={<NewArrivalsScreen />} />
+            <Route path="/new-arrivals/page/:pageNumber" element={<NewArrivalsScreen />} />
+            <Route path="/support" element={<SupportScreen />} />
+            <Route path="/help" element={<HelpCenterScreen />} />
+            <Route path="/shipping-info" element={<ShippingInfoScreen />} />
+            <Route path="/returns" element={<ReturnsScreen />} />
             
             <Route path="" element={<PrivateRoute />}>
                 <Route path="/shipping" element={<ShippingScreen />} />

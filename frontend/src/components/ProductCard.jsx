@@ -64,26 +64,26 @@ const ProductCard = ({ product }) => {
     <TiltCard className="h-full">
       <div className="card h-full flex flex-col group dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300">
         <Link to={`/product/${product._id}`} className="block relative overflow-hidden">
-          <div className="w-full aspect-[4/3] overflow-hidden bg-gray-50 dark:bg-gray-900">
+          <div className="w-full aspect-square overflow-hidden bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500 ease-in-out"
+                className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-500 ease-in-out"
               />
           </div>
           <button 
             onClick={toggleWishlist}
-            className={`absolute top-2 left-2 p-2 rounded-full shadow-md transition-all ${isInWishlist ? 'bg-primary-600 dark:bg-primary-500 text-white' : 'bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-750 hover:text-primary-600 dark:hover:text-primary-400'}`}
+            className={`absolute top-3 left-3 p-2 rounded-full shadow-md transition-all ${isInWishlist ? 'bg-primary-600 dark:bg-primary-500 text-white' : 'bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-750 hover:text-primary-600 dark:hover:text-primary-400'}`}
           >
             <Heart className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`} />
           </button>
           {product.countInStock === 0 && (
-            <div className="absolute top-2 right-2 bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 text-[10px] font-bold px-2 py-1 rounded">
+            <div className="absolute top-3 right-3 bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 text-[10px] font-bold px-2 py-1 rounded">
               SOLD OUT
             </div>
           )}
           {product.countInStock > 0 && product.countInStock <= 5 && (
-            <div className="absolute top-2 right-2 bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 text-[10px] font-bold px-2 py-1 rounded flex items-center">
+            <div className="absolute top-3 right-3 bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 text-[10px] font-bold px-2 py-1 rounded flex items-center">
               <span className="w-1.5 h-1.5 bg-orange-500 rounded-full mr-1 animate-pulse"></span>
               LOW STOCK
             </div>

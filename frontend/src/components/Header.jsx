@@ -1,11 +1,18 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCart, User, LogOut, Menu, X, Heart, Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
 import { logout } from '../store/slices/authSlice';
 import SearchBox from './SearchBox';
 import { useTheme } from './ThemeProvider';
-import { FadeIn, SlideDown, HoverScale } from '@hemanath-afk/afk-motion';
+import { HoverScale, SlideDown } from '@hemanath-afk/afk-motion';
+
+const navLinks = [
+  { label: 'Shop', to: '/shop' },
+  { label: 'All Products', to: '/products' },
+  { label: 'Categories', to: '/categories' },
+  { label: 'New Arrivals', to: '/new-arrivals' },
+];
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -14,6 +21,7 @@ const Header = () => {
   const { isDarkMode, toggleTheme } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -22,9 +30,10 @@ const Header = () => {
 
   return (
     <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-50 transition-colors duration-300">
+      {/* Main Nav Row */}
       <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/" className="flex items-center space-x-2 shrink-0">
           <HoverScale>
             <div className="w-8 h-8 bg-primary-600 dark:bg-primary-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xl italic">Q</span>
@@ -41,7 +50,7 @@ const Header = () => {
         </div>
 
         {/* Right Nav */}
-        <div className="flex items-center space-x-6">
+        <div className="flex items-center space-x-4">
           <button 
             onClick={toggleTheme} 
             className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
@@ -73,7 +82,7 @@ const Header = () => {
 
           {userInfo ? (
             <div className="relative group flex items-center space-x-1 cursor-pointer py-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{userInfo.name}</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-200 hidden sm:block">{userInfo.name}</span>
               <User className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 py-2 z-50">
                 <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750">Profile</Link>
@@ -106,15 +115,57 @@ const Header = () => {
         </div>
       </nav>
 
+      {/* Secondary Nav Links (Desktop) */}
+      <div className="hidden md:block border-t border-gray-50 dark:border-gray-800/60 bg-gray-50/50 dark:bg-gray-900/50">
+        <div className="container mx-auto px-4 h-10 flex items-center space-x-1">
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.to;
+            return (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                  isActive
+                    ? 'bg-primary-600 text-white'
+                    : 'text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-white dark:hover:bg-gray-800'
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+          <div className="flex-1" />
+          <Link to="/support" className="px-4 py-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+            Support
+          </Link>
+          <Link to="/help" className="px-4 py-1.5 text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+            Help Center
+          </Link>
+        </div>
+      </div>
+
       {/* Mobile nav */}
       {isMenuOpen && (
         <SlideDown duration={0.3}>
           <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 p-4 space-y-4 text-left shadow-lg">
             <SearchBox />
-            <div className="flex flex-col space-y-2">
-              <Link to="/" className="text-gray-600 dark:text-gray-300 py-2 font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
-              <Link to="/wishlist" className="text-gray-600 dark:text-gray-300 py-2 font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors" onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
-              <Link to="/cart" className="text-gray-600 dark:text-gray-300 py-2 font-medium hover:text-primary-600 dark:hover:text-primary-400 transition-colors" onClick={() => setIsMenuOpen(false)}>Cart</Link>
+            <div className="flex flex-col space-y-1">
+              <Link to="/" className="text-gray-600 dark:text-gray-300 px-3 py-2 rounded-lg font-medium hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="text-gray-600 dark:text-gray-300 px-3 py-2 rounded-lg font-medium hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <hr className="border-gray-100 dark:border-gray-800 my-1" />
+              <Link to="/support" className="text-gray-600 dark:text-gray-300 px-3 py-2 rounded-lg font-medium hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsMenuOpen(false)}>Support</Link>
+              <Link to="/help" className="text-gray-600 dark:text-gray-300 px-3 py-2 rounded-lg font-medium hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsMenuOpen(false)}>Help Center</Link>
+              <Link to="/wishlist" className="text-gray-600 dark:text-gray-300 px-3 py-2 rounded-lg font-medium hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsMenuOpen(false)}>Wishlist</Link>
+              <Link to="/cart" className="text-gray-600 dark:text-gray-300 px-3 py-2 rounded-lg font-medium hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => setIsMenuOpen(false)}>Cart</Link>
             </div>
           </div>
         </SlideDown>

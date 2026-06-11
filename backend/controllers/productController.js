@@ -7,7 +7,7 @@ import { Readable } from 'stream';
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = Number(req.query.pageSize) || 8;
+  const pageSize = Number(req.query.pageSize) || 9;
   const page = Number(req.query.pageNumber) || 1;
 
   const keyword = req.query.keyword
