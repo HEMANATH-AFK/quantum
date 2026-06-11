@@ -104,7 +104,7 @@ const HomeScreen = () => {
                   <div className="text-xs text-white/50 font-semibold mt-1">Average Rating</div>
                 </div>
                 <div>
-                  <div className="text-2xl md:text-3xl font-black text-white">Free</div>
+                  <div className="text-2xl md:text-3xl font-black text-white">LOW COST</div>
                   <div className="text-xs text-white/50 font-semibold mt-1">Worldwide Shipping</div>
                 </div>
               </div>
