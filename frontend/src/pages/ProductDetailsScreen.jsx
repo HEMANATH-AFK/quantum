@@ -228,6 +228,67 @@ const ProductDetailsScreen = () => {
           </div>
         </div>
 
+        {/* Frequently Bought Together Bundle */}
+        {!loadingRelated && relatedProducts && relatedProducts.length > 0 && (
+          <FadeUp duration={0.5}>
+            <div className="card p-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800/40 dark:to-gray-800 border border-gray-100 dark:border-gray-700/60 rounded-3xl mt-8">
+              <h3 className="text-lg font-black text-gray-900 dark:text-white mb-6 uppercase tracking-wider">
+                Frequently Bought Together
+              </h3>
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+                  {/* Current Item */}
+                  <div className="flex items-center space-x-3 bg-white dark:bg-gray-900 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm max-w-[280px]">
+                    <img src={product.image} alt={product.name} className="w-16 h-16 object-contain rounded-xl" />
+                    <div>
+                      <p className="text-xs font-bold text-gray-900 dark:text-white line-clamp-1">{product.name}</p>
+                      <p className="text-sm font-black text-primary-600 dark:text-primary-400 mt-0.5">₹{product.price.toLocaleString('en-IN')}</p>
+                    </div>
+                  </div>
+
+                  {/* Plus Sign */}
+                  <div className="text-xl font-black text-gray-450 dark:text-gray-500 font-mono">+</div>
+
+                  {/* Related Item */}
+                  <div className="flex items-center space-x-3 bg-white dark:bg-gray-900 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm max-w-[280px]">
+                    <img src={relatedProducts[0].image} alt={relatedProducts[0].name} className="w-16 h-16 object-contain rounded-xl" />
+                    <div>
+                      <p className="text-xs font-bold text-gray-900 dark:text-white line-clamp-1">{relatedProducts[0].name}</p>
+                      <p className="text-sm font-black text-primary-600 dark:text-primary-400 mt-0.5">₹{relatedProducts[0].price.toLocaleString('en-IN')}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Price and Add Button */}
+                <div className="flex flex-col items-center md:items-end justify-center gap-2 border-t md:border-t-0 md:border-l border-gray-250/20 dark:border-gray-700/40 pt-4 md:pt-0 md:pl-6 shrink-0 w-full md:w-auto">
+                  <div className="text-center md:text-right">
+                    <span className="text-xs text-gray-400 dark:text-gray-500 font-semibold line-through mr-2">
+                      ₹{(product.price + relatedProducts[0].price).toLocaleString('en-IN')}
+                    </span>
+                    <span className="text-xl font-black text-gray-950 dark:text-white">
+                      ₹{Math.round((product.price + relatedProducts[0].price) * 0.9).toLocaleString('en-IN')}
+                    </span>
+                    <span className="block text-[10px] text-green-600 dark:text-green-400 font-black tracking-widest mt-1">
+                      SAVE 10% ON BUNDLE
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      dispatch(addToCart({ ...product, qty: 1 }));
+                      dispatch(addToCart({ ...relatedProducts[0], qty: 1 }));
+                      toast.success('Bundle added to cart with 10% discount!');
+                      navigate('/cart');
+                    }}
+                    className="btn-primary w-full md:w-auto px-6 py-2.5 rounded-xl text-xs font-black shadow-md cursor-pointer"
+                  >
+                    Add Bundle to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </FadeUp>
+        )}
+
         {/* Analytics & Reviews */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-20">
             <div className="lg:col-span-1 space-y-8">
