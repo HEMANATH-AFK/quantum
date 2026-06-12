@@ -64,6 +64,13 @@ export const productsApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Product'],
     }),
+    voteReviewHelpful: builder.mutation({
+      query: (data) => ({
+        url: `${PRODUCTS_URL}/${data.productId}/reviews/${data.reviewId}/helpful`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Product'],
+    }),
     getTopProducts: builder.query({
       query: () => `${PRODUCTS_URL}/top`,
       keepUnusedDataFor: 5,
@@ -91,6 +98,7 @@ export const {
   useUploadProductImageMutation,
   useDeleteProductMutation,
   useCreateReviewMutation,
+  useVoteReviewHelpfulMutation,
   useGetTopProductsQuery,
   useGetRelatedProductsQuery,
   useUploadProductsCSVMutation,

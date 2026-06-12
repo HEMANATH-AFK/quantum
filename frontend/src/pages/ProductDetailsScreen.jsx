@@ -363,7 +363,7 @@ const ProductDetailsScreen = () => {
               ) : (
                   <div className="space-y-6">
                       {filteredReviews.map((review) => (
-                          <Review key={review._id} review={review} onImageClick={setActiveReviewImage} />
+                          <Review key={review._id} review={review} productId={product._id} onImageClick={setActiveReviewImage} />
                       ))}
                   </div>
               )}

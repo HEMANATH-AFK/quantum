@@ -11,6 +11,8 @@ const reviewSchema = mongoose.Schema(
       required: true,
       ref: 'User',
     },
+    helpfulVotes: { type: Number, default: 0 },
+    helpfulUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   },
   {
     timestamps: true,

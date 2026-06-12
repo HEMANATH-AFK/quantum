@@ -253,6 +253,47 @@ const uploadProducts = asyncHandler(async (req, res) => {
     });
 });
 
+// @desc    Vote a review as helpful
+// @route   POST /api/products/:id/reviews/:reviewId/helpful
+// @access  Private
+const voteReviewHelpful = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+
+  if (product) {
+    const review = product.reviews.id(req.params.reviewId);
+
+    if (review) {
+      if (!review.helpfulUsers) {
+        review.helpfulUsers = [];
+      }
+
+      const alreadyVoted = review.helpfulUsers.find(
+        (userId) => userId.toString() === req.user._id.toString()
+      );
+
+      if (alreadyVoted) {
+        review.helpfulUsers = review.helpfulUsers.filter(
+          (userId) => userId.toString() !== req.user._id.toString()
+        );
+        review.helpfulVotes = Math.max(0, review.helpfulVotes - 1);
+        await product.save();
+        res.json({ message: 'Vote removed', helpfulVotes: review.helpfulVotes, hasVoted: false });
+      } else {
+        review.helpfulUsers.push(req.user._id);
+        review.helpfulVotes += 1;
+        await product.save();
+        res.json({ message: 'Vote added', helpfulVotes: review.helpfulVotes, hasVoted: true });
+      }
+    } else {
+      res.status(404);
+      throw new Error('Review not found');
+    }
+  } else {
+    res.status(404);
+    throw new Error('Product not found');
+  }
+});
+
 export {
   getProducts,
   getProductById,
@@ -263,4 +304,5 @@ export {
   getTopProducts,
   getRelatedProducts,
   uploadProducts,
+  voteReviewHelpful,
 };

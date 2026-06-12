@@ -10,6 +10,7 @@ import {
   getTopProducts,
   getRelatedProducts,
   uploadProducts,
+  voteReviewHelpful,
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 import multer from 'multer';
@@ -19,6 +20,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.route('/').get(getProducts).post(protect, admin, createProduct);
 router.route('/upload').post(protect, admin, upload.single('csvFile'), uploadProducts);
 router.route('/:id/reviews').post(protect, createProductReview);
+router.route('/:id/reviews/:reviewId/helpful').post(protect, voteReviewHelpful);
 router.get('/top', getTopProducts);
 router.get('/:id/related', getRelatedProducts);
 router
