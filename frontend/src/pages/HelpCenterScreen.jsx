@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, Search, LifeBuoy } from 'lucide-react';
+import { ChevronDown, Search, LifeBuoy } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const faqs = [
   {
@@ -64,7 +65,7 @@ const HelpCenterScreen = () => {
     : null;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-10 py-4">
+    <div className="max-w-3xl mx-auto space-y-10 py-4 text-left">
       {/* Header */}
       <div className="text-center">
         <div className="inline-flex w-16 h-16 bg-blue-50 dark:bg-blue-950/40 rounded-2xl items-center justify-center mx-auto mb-5">
@@ -100,15 +101,17 @@ const HelpCenterScreen = () => {
           )}
         </div>
       ) : (
-        faqs.map((section, si) => (
-          <div key={si} className="space-y-3">
-            <h2 className="text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">{section.category}</h2>
-            {section.items.map((item, ii) => {
-              const id = `${si}-${ii}`;
-              return <FaqItem key={id} item={item} openIndex={openIndex} setOpenIndex={setOpenIndex} id={id} />;
-            })}
-          </div>
-        ))
+        <div className="space-y-8">
+          {faqs.map((section, si) => (
+            <div key={si} className="space-y-3">
+              <h2 className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">{section.category}</h2>
+              {section.items.map((item, ii) => {
+                const id = `${si}-${ii}`;
+                return <FaqItem key={id} item={item} openIndex={openIndex} setOpenIndex={setOpenIndex} id={id} />;
+              })}
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -120,7 +123,7 @@ const FaqItem = ({ item, openIndex, setOpenIndex, id, showCategory }) => {
     <div className="card dark:bg-gray-800 dark:border-gray-700 overflow-hidden">
       <button
         onClick={() => setOpenIndex(isOpen ? null : id)}
-        className="w-full flex items-center justify-between p-5 text-left"
+        className="w-full flex items-center justify-between p-5 text-left outline-none cursor-pointer"
       >
         <div>
           {showCategory && (
@@ -128,15 +131,29 @@ const FaqItem = ({ item, openIndex, setOpenIndex, id, showCategory }) => {
           )}
           <span className="font-bold text-gray-900 dark:text-white text-sm">{item.q}</span>
         </div>
-        <div className="ml-4 shrink-0 text-gray-400">
-          {isOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </div>
+        <motion.div 
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+          className="ml-4 shrink-0 text-gray-400"
+        >
+          <ChevronDown className="w-5 h-5" />
+        </motion.div>
       </button>
-      {isOpen && (
-        <div className="px-5 pb-5 text-sm text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-50 dark:border-gray-700 pt-4">
-          {item.a}
-        </div>
-      )}
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="overflow-hidden border-t border-gray-50 dark:border-gray-700"
+          >
+            <div className="px-5 py-4 text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+              {item.a}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
