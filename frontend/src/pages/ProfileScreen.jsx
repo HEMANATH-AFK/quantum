@@ -441,10 +441,11 @@ const ProfileScreen = () => {
                     </div>
                   )}
                 </div>
-
               </div>
+
             </div>
-          )}
+          </div>
+        )}
 
           {/* TAB 2: ORDER HISTORY */}
           {activeTab === 'orders' && (
