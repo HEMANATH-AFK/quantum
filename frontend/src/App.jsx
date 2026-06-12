@@ -38,6 +38,7 @@ import SupportScreen from './pages/SupportScreen.jsx';
 import HelpCenterScreen from './pages/HelpCenterScreen.jsx';
 import ShippingInfoScreen from './pages/ShippingInfoScreen.jsx';
 import ReturnsScreen from './pages/ReturnsScreen.jsx';
+import StoreLocatorScreen from './pages/StoreLocatorScreen.jsx';
 
 const App = () => {
   return (
@@ -56,6 +57,7 @@ const App = () => {
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/wishlist" element={<WishlistScreen />} />
             <Route path="/compare" element={<CompareScreen />} />
+            <Route path="/stores" element={<StoreLocatorScreen />} />
 
             {/* Shop & Info Pages */}
             <Route path="/shop" element={<ShopScreen />} />
