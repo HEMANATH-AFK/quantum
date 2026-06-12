@@ -336,9 +336,83 @@ const ProfileScreen = () => {
                   )}
                 </div>
 
-                {/* Default Address */}
-                <div className="space-y-4">
-                  <h2 className="text-lg font-black text-gray-900 dark:text-white">Primary Address</h2>
+                {/* Loyalty and Address Column */}
+                <div className="space-y-6">
+                  {/* Loyalty Card */}
+                  {(() => {
+                    const loyaltyPoints = Math.floor(totalSpent / 100);
+                    let currentTier = 'Bronze';
+                    let nextTier = 'Silver';
+                    let pointsNeeded = 100 - loyaltyPoints;
+                    let progress = (loyaltyPoints / 100) * 100;
+                    let tierColor = 'from-amber-700 to-amber-900'; // Bronze
+
+                    if (loyaltyPoints >= 1000) {
+                      currentTier = 'Platinum';
+                      nextTier = 'Max';
+                      pointsNeeded = 0;
+                      progress = 100;
+                      tierColor = 'from-teal-500 via-cyan-600 to-blue-700';
+                    } else if (loyaltyPoints >= 300) {
+                      currentTier = 'Gold';
+                      nextTier = 'Platinum';
+                      pointsNeeded = 1000 - loyaltyPoints;
+                      progress = ((loyaltyPoints - 300) / 700) * 100;
+                      tierColor = 'from-yellow-500 via-amber-500 to-orange-600';
+                    } else if (loyaltyPoints >= 100) {
+                      currentTier = 'Silver';
+                      nextTier = 'Gold';
+                      pointsNeeded = 300 - loyaltyPoints;
+                      progress = ((loyaltyPoints - 100) / 200) * 100;
+                      tierColor = 'from-slate-400 to-slate-600';
+                    }
+
+                    return (
+                      <div className={`card p-6 bg-gradient-to-br ${tierColor} text-white border-none shadow-xl rounded-2xl relative overflow-hidden`}>
+                        {/* Decorative Background Circles */}
+                        <div className="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none" />
+                        <div className="absolute -left-10 -bottom-10 w-24 h-24 bg-black/10 rounded-full blur-md pointer-events-none" />
+
+                        <div className="relative z-10 space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-black uppercase tracking-widest bg-white/20 px-2.5 py-1 rounded-full border border-white/10">
+                              Loyalty Rewards
+                            </span>
+                            <Sparkles className="w-5 h-5 text-white animate-pulse" />
+                          </div>
+
+                          <div>
+                            <span className="text-2xl font-black">{currentTier} Tier</span>
+                            <p className="text-3xl font-black mt-1">{loyaltyPoints.toLocaleString()} <span className="text-xs font-bold text-white/75">Points</span></p>
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <div className="flex justify-between text-xs font-bold text-white/80">
+                              <span>Progress to {nextTier}</span>
+                              <span>{Math.round(progress)}%</span>
+                            </div>
+                            <div className="w-full bg-black/25 rounded-full h-2 overflow-hidden border border-white/5">
+                              <div className="bg-white h-full rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+                            </div>
+                          </div>
+
+                          {pointsNeeded > 0 ? (
+                            <p className="text-[11px] font-semibold text-white/90">
+                              Spend ₹{(pointsNeeded * 100).toLocaleString('en-IN')} more to reach <span className="font-black underline">{nextTier}</span> tier!
+                            </p>
+                          ) : (
+                            <p className="text-[11px] font-black text-white">
+                              🎉 You have reached our highest status tier!
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Default Address */}
+                  <div className="space-y-4">
+                    <h2 className="text-lg font-black text-gray-900 dark:text-white">Primary Address</h2>
                   {savedAddresses.length === 0 ? (
                     <div className="card p-8 text-center text-gray-400 dark:text-gray-500 font-medium dark:bg-gray-800 dark:border-gray-700 h-[calc(100%-44px)] flex flex-col items-center justify-center">
                       <MapPin className="w-10 h-10 mb-3 text-gray-300 dark:text-gray-655" />
