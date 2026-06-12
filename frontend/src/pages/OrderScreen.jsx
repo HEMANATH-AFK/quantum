@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useGetOrderDetailsQuery, usePayOrderMutation, useDeliverOrderMutation } from '../store/slices/ordersApiSlice';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { Package, Truck, CreditCard, ChevronLeft, Download } from 'lucide-react';
+import { Package, Truck, CreditCard, ChevronLeft, Download, CheckCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import jsPDF from 'jspdf';
 import * as htmlToImage from 'html-to-image';
@@ -73,14 +73,14 @@ const OrderScreen = () => {
           <div className="card p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
               <div className="relative">
                   {/* Connecting Line */}
-                  <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 dark:bg-gray-700 -translate-y-1/2 rounded-full hidden md:block" />
+                  <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-100 dark:bg-gray-750 -translate-y-1/2 rounded-full hidden md:block" />
                   
                   {/* Progress Line */}
                   <div 
-                      className="absolute top-1/2 left-0 h-1 bg-primary-600 dark:bg-primary-500 -translate-y-1/2 rounded-full hidden md:block transition-all duration-1000" 
-                      style={{ width: order.isDelivered ? '100%' : order.isPaid ? '50%' : '0%' }}
+                      className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-primary-500 to-indigo-600 -translate-y-1/2 rounded-full hidden md:block transition-all duration-1000" 
+                      style={{ width: order.isDelivered ? '100%' : order.isPaid ? '66.6%' : '33.3%' }}
                   />
-
+ 
                   <div className="relative z-10 flex flex-col md:flex-row justify-between gap-8 md:gap-0">
                       {/* Step 1: Placed */}
                       <div className="flex flex-row md:flex-col items-center md:text-center group">
@@ -90,37 +90,52 @@ const OrderScreen = () => {
                             </div>
                           </HoverScale>
                           <div className="ml-4 md:ml-0 md:mt-4 text-left md:text-center">
-                              <h4 className="font-black text-gray-900 dark:text-white">Order Placed</h4>
-                              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{new Date(order.createdAt).toLocaleDateString()}</p>
+                              <h4 className="font-black text-gray-900 dark:text-white text-sm">Order Placed</h4>
+                              <p className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider">{new Date(order.createdAt).toLocaleDateString()}</p>
                           </div>
                       </div>
-
+ 
                       {/* Step 2: Paid */}
                       <div className="flex flex-row md:flex-col items-center md:text-center group">
                           <HoverScale>
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 ${order.isPaid ? 'bg-primary-600 dark:bg-primary-500 text-white shadow-lg shadow-primary-200 dark:shadow-none' : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500'}`}>
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-300 ${order.isPaid ? 'bg-primary-600 dark:bg-primary-500 text-white shadow-lg' : 'bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-505'}`}>
                                 <CreditCard className="w-5 h-5" />
                             </div>
                           </HoverScale>
                           <div className="ml-4 md:ml-0 md:mt-4 text-left md:text-center">
-                              <h4 className={`font-black ${order.isPaid ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>Payment Status</h4>
-                              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                                  {order.isPaid ? `Paid ` : 'Pending'}
+                              <h4 className={`font-black text-sm ${order.isPaid ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>Payment</h4>
+                              <p className="text-[10px] text-gray-400 dark:text-gray-505 font-bold uppercase tracking-wider">
+                                  {order.isPaid ? `Confirmed` : 'Pending'}
                               </p>
                           </div>
                       </div>
-
-                      {/* Step 3: Delivered */}
+ 
+                      {/* Step 3: Shipped */}
                       <div className="flex flex-row md:flex-col items-center md:text-center group">
                           <HoverScale>
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 ${order.isDelivered ? 'bg-primary-600 dark:bg-primary-500 text-white shadow-lg shadow-primary-200 dark:shadow-none' : 'bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-500'}`}>
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-300 ${order.isPaid ? 'bg-primary-600 dark:bg-primary-500 text-white shadow-lg' : 'bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-505'}`}>
                                 <Truck className="w-5 h-5" />
                             </div>
                           </HoverScale>
                           <div className="ml-4 md:ml-0 md:mt-4 text-left md:text-center">
-                              <h4 className={`font-black ${order.isDelivered ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>Delivery Status</h4>
-                              <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                                  {order.isDelivered ? `Delivered ` : 'Processing'}
+                              <h4 className={`font-black text-sm ${order.isPaid ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500'}`}>In Transit</h4>
+                              <p className="text-[10px] text-gray-400 dark:text-gray-550 font-bold uppercase tracking-wider">
+                                  {order.isPaid ? 'Shipped' : 'Awaiting Payment'}
+                              </p>
+                          </div>
+                      </div>
+ 
+                      {/* Step 4: Delivered */}
+                      <div className="flex flex-row md:flex-col items-center md:text-center group">
+                          <HoverScale>
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 z-10 transition-all duration-300 ${order.isDelivered ? 'bg-primary-600 dark:bg-primary-500 text-white shadow-lg' : 'bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 text-gray-400 dark:text-gray-505'}`}>
+                                <CheckCircle className="w-5 h-5" />
+                            </div>
+                          </HoverScale>
+                          <div className="ml-4 md:ml-0 md:mt-4 text-left md:text-center">
+                              <h4 className={`font-black text-sm ${order.isDelivered ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-550'}`}>Delivered</h4>
+                              <p className="text-[10px] text-gray-400 dark:text-gray-550 font-bold uppercase tracking-wider">
+                                  {order.isDelivered ? 'Arrived' : 'Processing'}
                               </p>
                           </div>
                       </div>
