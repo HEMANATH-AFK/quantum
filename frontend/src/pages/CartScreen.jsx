@@ -149,6 +149,44 @@ const CartScreen = () => {
                   </div>
               )}
 
+              {/* Available Coupons Showcase */}
+              {cartItems.length > 0 && !coupon && (
+                <div className="mt-4 border-t border-gray-100 dark:border-gray-750 pt-4 text-left">
+                  <h4 className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-3">Available Coupons</h4>
+                  <div className="space-y-2.5">
+                    {[
+                      { code: 'WELCOME10', desc: 'Get 10% off your order' },
+                      { code: 'QUANTUM20', desc: 'Get 20% off your order' },
+                      { code: 'SUPER30', desc: 'Get 30% off your order' }
+                    ].map((promo) => (
+                      <div 
+                        key={promo.code} 
+                        className="bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-3 flex items-center justify-between group hover:border-primary-500 transition-colors"
+                      >
+                        <div>
+                          <span className="font-extrabold text-xs text-gray-900 dark:text-white font-mono tracking-wider">{promo.code}</span>
+                          <p className="text-[10px] text-gray-400 dark:text-gray-500 font-semibold mt-0.5">{promo.desc}</p>
+                        </div>
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await verifyCoupon({ code: promo.code }).unwrap();
+                              dispatch(saveCoupon({ code: res.code, discount: res.discount }));
+                              toast.success(`Coupon ${res.code} applied!`);
+                            } catch (err) {
+                              toast.error(err?.data?.message || err.error);
+                            }
+                          }}
+                          className="bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400 text-[10px] font-black px-3 py-1.5 rounded-lg border border-primary-100 dark:border-primary-900/20 hover:bg-primary-600 hover:text-white transition-all cursor-pointer"
+                        >
+                          Apply
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                   <span>Items ({cartItems.reduce((acc, item) => acc + item.qty, 0)})</span>
