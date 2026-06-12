@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingCart, User, LogOut, Menu, X, Heart, Moon, Sun, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ShoppingCart, User, LogOut, Menu, X, Heart, Moon, Sun, ChevronLeft, ChevronRight, GitCompare } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { logout } from '../store/slices/authSlice';
 import SearchBox from './SearchBox';
@@ -16,6 +16,7 @@ const navLinks = [
 
 const Header = () => {
   const { cartItems } = useSelector((state) => state.cart);
+  const { compareItems } = useSelector((state) => state.compare);
   const { userInfo } = useSelector((state) => state.auth);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isDarkMode, toggleTheme } = useTheme();
@@ -94,6 +95,19 @@ const Header = () => {
           >
             {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
+
+          <Link 
+            to="/compare" 
+            className="relative text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors p-1.5 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+            title="Compare Products"
+          >
+            <GitCompare className="w-5 h-5" />
+            {compareItems.length > 0 && (
+              <span className="absolute top-0 right-0 bg-indigo-650 dark:bg-indigo-550 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full ring-2 ring-white dark:ring-gray-900 transform translate-x-1/3 -translate-y-1/3">
+                {compareItems.length}
+              </span>
+            )}
+          </Link>
 
           <Link 
             to="/wishlist" 

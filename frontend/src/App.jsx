@@ -25,6 +25,7 @@ import ProductEditScreen from './pages/ProductEditScreen.jsx';
 import UserListScreen from './pages/UserListScreen.jsx';
 import UserEditScreen from './pages/UserEditScreen.jsx';
 import WishlistScreen from './pages/WishlistScreen';
+import CompareScreen from './pages/CompareScreen.jsx';
 import CouponListScreen from './pages/admin/CouponListScreen.jsx';
 import CouponEditScreen from './pages/admin/CouponEditScreen.jsx';
 import DashboardScreen from './pages/admin/DashboardScreen.jsx';
@@ -54,6 +55,7 @@ const App = () => {
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/wishlist" element={<WishlistScreen />} />
+            <Route path="/compare" element={<CompareScreen />} />
 
             {/* Shop & Info Pages */}
             <Route path="/shop" element={<ShopScreen />} />
